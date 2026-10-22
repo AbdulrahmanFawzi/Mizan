@@ -6,6 +6,7 @@
     <Project Path="src/Mizan.Infrastructure/Mizan.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Mizan.Api.Tests/Mizan.Api.Tests.csproj" />
     <Project Path="tests/Mizan.Domain.Tests/Mizan.Domain.Tests.csproj" />
   </Folder>
 </Solution>

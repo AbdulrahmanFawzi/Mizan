@@ -1,3 +1,34 @@
-@Mizan.Api_HostAddress = http://localhost:5009
+@host = http://localhost:5009
 
-GET {{Mizan.Api_HostAddress}}/health
+### Register (save accessToken from the response)
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ali",
+  "email": "ali@example.com",
+  "password": "P@ssw0rd123",
+  "monthlyIncome": 10000,
+  "periodStartDay": 27
+}
+
+### Login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@example.com",
+  "password": "P@ssw0rd123"
+}
+
+### Dashboard
+@token = paste-access-token-here
+GET {{host}}/api/dashboard
+Authorization: Bearer {{token}}
+
+### Current budget
+GET {{host}}/api/budgets/current
+Authorization: Bearer {{token}}
+
+### Health
+GET {{host}}/health

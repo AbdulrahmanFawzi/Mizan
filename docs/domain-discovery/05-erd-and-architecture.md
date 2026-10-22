@@ -181,3 +181,19 @@ Mizan/
 | **5. Flutter** | التطبيق | الـ API جاهز ومختبر | M5 |
 
 **ملاحظة:** الـ Roadmap الأصلي يبدأ بـ "Vertical Slice" (شريحة رفيعة من كل الطبقات). اخترت أبدأ بالـ Domain لأن هدفك تعلّم DDD، والـ Domain هو المكان اللي يصير فيه التعلم الحقيقي. المرحلة 0 تضمن إن الهيكل كله موجود من البداية.
+
+---
+
+## فروقات التنفيذ عن هذا التصميم
+
+أثناء كتابة الكود تغيّرت أشياء صغيرة عن الـ ERD أعلاه. المرجع النهائي هو الـ Migration في `src/Mizan.Infrastructure/Persistence/Migrations`.
+
+| الشيء | في التصميم | في التنفيذ | السبب |
+|---|---|---|---|
+| عملة المبالغ | عمود `currency` واحد لكل جدول | عمود عملة مع **كل** مبلغ (`amount` + `amount_currency`) | `Money` يُخزَّن كـ Complex Type كامل (مبلغ + عملة) بدون افتراضات |
+| `goals.completed_at` | غير موجود | موجود | عشان إشعار "اكتمل الهدف" ينرسل مرة وحدة فقط (BR-G8) |
+| `categories.normalized_name` | `UNIQUE (user_id, lower(name))` | عمود `normalized_name` عليه Unique Index | EF Core ما يدعم Index على تعبير مثل `lower()` بشكل مباشر |
+| Unique Index على `budgets` | في الـ Model | مكتوب يدويًا في الـ Migration | EF Core ما يدعم Index على Complex Property (`Budget.Period`) |
+| `period_start_day` | smallint | integer | لا فرق عملي |
+| بداية الفترة الجديدة (UC-25) | الـ Actor "الوقت" | تُنشأ **عند أول حاجة لها** (`BudgetProvisioner`) | بدون Background Job: أبسط ونتيجته نفسها |
+| حذف فئة (`CategoryDeleted`) | Handler ينقل المصروفات | الـ Handler ينقل المصروفات **ثم يحذف الفئة** بنفسه | حتى يتم كل شيء في Transaction واحدة وبالترتيب الصحيح للـ Foreign Keys |
