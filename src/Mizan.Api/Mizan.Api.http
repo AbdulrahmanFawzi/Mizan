@@ -1,0 +1,3 @@
+@Mizan.Api_HostAddress = http://localhost:5009
+
+GET {{Mizan.Api_HostAddress}}/health
