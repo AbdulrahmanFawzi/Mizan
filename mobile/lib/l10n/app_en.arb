@@ -294,5 +294,9 @@
   },
   "notifNew": "New",
   "notifEarlier": "Earlier",
-  "goalDetails": "Details"
+  "goalDetails": "Details",
+  "appearance": "Appearance",
+  "themeSystem": "Auto",
+  "themeLight": "Light",
+  "themeDark": "Dark"
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/settings/locale_controller.dart';
+import 'features/settings/theme_mode_controller.dart';
 import 'l10n/app_localizations.dart';
 
 class MizanApp extends ConsumerWidget {
@@ -16,6 +17,7 @@ class MizanApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
+        themeMode: ref.watch(themeModeProvider),
         routerConfig: ref.watch(routerProvider),
         // Arabic switches the whole layout to right-to-left automatically.
         locale: ref.watch(localeProvider),

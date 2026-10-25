@@ -11,6 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
 import '../profile/data/profile_repository.dart';
 import 'locale_controller.dart';
+import 'theme_mode_controller.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -55,6 +56,7 @@ class SettingsScreen extends ConsumerWidget {
     final colors = context.mizan;
     final profile = ref.watch(profileProvider).value;
     final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settings)),
@@ -81,6 +83,21 @@ class SettingsScreen extends ConsumerWidget {
                 final value = selection.single;
                 ref.read(localeProvider.notifier).set(value == 'system' ? null : Locale(value));
               },
+            ),
+          ),
+          SectionHeader(l10n.appearance),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<ThemeMode>(
+              key: const Key('themeSegment'),
+              showSelectedIcon: false,
+              segments: [
+                ButtonSegment(value: ThemeMode.system, label: Text(l10n.themeSystem), icon: const Icon(Icons.brightness_auto_rounded)),
+                ButtonSegment(value: ThemeMode.light, label: Text(l10n.themeLight), icon: const Icon(Icons.light_mode_rounded)),
+                ButtonSegment(value: ThemeMode.dark, label: Text(l10n.themeDark), icon: const Icon(Icons.dark_mode_rounded)),
+              ],
+              selected: {themeMode},
+              onSelectionChanged: (selection) => ref.read(themeModeProvider.notifier).set(selection.single),
             ),
           ),
           SectionHeader(l10n.account),

@@ -142,5 +142,9 @@
   "ofAmount": "من {amount}",
   "notifNew": "جديدة",
   "notifEarlier": "سابقة",
-  "goalDetails": "التفاصيل"
+  "goalDetails": "التفاصيل",
+  "appearance": "المظهر",
+  "themeSystem": "تلقائي",
+  "themeLight": "فاتح",
+  "themeDark": "داكن"
 }

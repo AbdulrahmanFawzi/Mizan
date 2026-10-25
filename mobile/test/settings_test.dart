@@ -8,6 +8,7 @@ import 'package:mizan/features/auth/application/auth_controller.dart';
 import 'package:mizan/features/profile/data/profile_repository.dart';
 import 'package:mizan/features/settings/edit_profile_screen.dart';
 import 'package:mizan/features/settings/locale_controller.dart';
+import 'package:mizan/features/settings/theme_mode_controller.dart';
 import 'package:mizan/features/settings/profile_actions.dart';
 import 'package:mizan/features/settings/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -110,6 +111,29 @@ void main() {
     final container = await pumpSettings(tester);
 
     expect(container.read(localeProvider), const Locale('en'));
+  });
+
+  testWidgets('the theme choice is saved for the next launch', (tester) async {
+    final container = await pumpSettings(tester);
+    expect(container.read(themeModeProvider), ThemeMode.system);
+
+    await tester.tap(find.text('Dark'));
+    await tester.pumpAndSettle();
+    expect(container.read(themeModeProvider), ThemeMode.dark);
+    expect(preferences.getString('themeMode'), 'dark');
+
+    await tester.tap(find.text('Auto'));
+    await tester.pumpAndSettle();
+    expect(preferences.getString('themeMode'), isNull);
+  });
+
+  testWidgets('a saved theme is restored on start', (tester) async {
+    SharedPreferences.setMockInitialValues({'themeMode': 'light'});
+    preferences = await SharedPreferences.getInstance();
+
+    final container = await pumpSettings(tester);
+
+    expect(container.read(themeModeProvider), ThemeMode.light);
   });
 
   testWidgets('deleting the account needs confirmation, then ends the session', (tester) async {

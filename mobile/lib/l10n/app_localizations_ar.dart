@@ -500,4 +500,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get goalDetails => 'التفاصيل';
+
+  @override
+  String get appearance => 'المظهر';
+
+  @override
+  String get themeSystem => 'تلقائي';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
 }
