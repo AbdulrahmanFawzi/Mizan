@@ -265,5 +265,21 @@
   "deleteAccount": "Delete account",
   "deleteAccountQuestion": "Delete your account?",
   "deleteAccountExplain": "This permanently deletes your account and all your data: income, budgets, expenses, goals, and notifications. It can't be undone.",
-  "deleteAccountConfirm": "Delete permanently"
+  "deleteAccountConfirm": "Delete permanently",
+  "goodMorning": "Good morning",
+  "goodEvening": "Good evening",
+  "safeToSpendToday": "You can spend today",
+  "safeToSpendNone": "Nothing left to spend this period",
+  "availableOf": "{amount} available",
+  "@availableOf": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetShort": "of budget",
+  "whereMoneyWent": "Where your money went",
+  "seeAll": "See all",
+  "plannedSavingNote": "Planned savings are set aside first"
 }

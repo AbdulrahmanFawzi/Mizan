@@ -55,7 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AuthScaffold(children: [
+    return AuthScaffold(title: l10n.login, children: [
       Form(
         key: _formKey,
         child: AutofillGroup(

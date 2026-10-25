@@ -3,6 +3,7 @@ using Mizan.Application.Budgets;
 using Mizan.Application.Common;
 using Mizan.Application.Goals;
 using Mizan.Domain.Categories;
+using Mizan.Domain.Common;
 using Mizan.Domain.Goals;
 using Mizan.Domain.Insights;
 
@@ -17,6 +18,8 @@ public sealed record DashboardDto(
     MoneyDto MonthlyIncome,
     MoneyDto TotalSpent,
     MoneyDto Available,
+    MoneyDto? SafeToSpendToday,
+    int DaysLeft,
     decimal? BudgetUsagePercent,
     IReadOnlyList<TopSpendingDto> TopSpending,
     IReadOnlyList<GoalDto> Goals,
@@ -67,11 +70,21 @@ public sealed class DashboardService(
             : decimal.Round(totalSpent.Amount / allocated.Amount * 100m, 0, MidpointRounding.AwayFromZero);
 
         var period = budget.Period;
+        // Savings still to be put aside this period are not "spendable" (BR-N7).
+        var zero = Money.Zero(budget.PlannedIncome.Currency);
+        var remainingPlannedSavings = budget.StatusFor(snapshot.SpentByCategory)
+            .Where(s => snapshot.Kinds.GetValueOrDefault(s.CategoryId) == CategoryKind.Savings && s.Remaining.IsPositive)
+            .Aggregate(zero, (total, s) => total + s.Remaining);
+        var safeToSpend = SpendingAnalysis.SafeToSpendToday(
+            budget.PlannedIncome, totalSpent, remainingPlannedSavings, period, today);
+
         return new DashboardDto(
             new PeriodDto(period.Start, period.End, period.LengthInDays, period.DaysElapsed(today)),
             MoneyDto.From(budget.PlannedIncome),
             MoneyDto.From(totalSpent),
             MoneyDto.From(budget.PlannedIncome - totalSpent),
+            safeToSpend is null ? null : MoneyDto.From(safeToSpend),
+            period.LengthInDays - period.DaysElapsed(today) + 1,
             usage,
             topSpending,
             goals,

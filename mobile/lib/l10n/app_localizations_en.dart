@@ -451,4 +451,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountConfirm => 'Delete permanently';
+
+  @override
+  String get goodMorning => 'Good morning';
+
+  @override
+  String get goodEvening => 'Good evening';
+
+  @override
+  String get safeToSpendToday => 'You can spend today';
+
+  @override
+  String get safeToSpendNone => 'Nothing left to spend this period';
+
+  @override
+  String availableOf(String amount) {
+    return '$amount available';
+  }
+
+  @override
+  String get budgetShort => 'of budget';
+
+  @override
+  String get whereMoneyWent => 'Where your money went';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get plannedSavingNote => 'Planned savings are set aside first';
 }

@@ -127,5 +127,14 @@
   "deleteAccount": "حذف الحساب",
   "deleteAccountQuestion": "تحذف حسابك؟",
   "deleteAccountExplain": "هذا يحذف حسابك وكل بياناتك نهائيًا: الدخل والميزانيات والمصروفات والأهداف والإشعارات. ما تقدر تتراجع عنه.",
-  "deleteAccountConfirm": "احذف نهائيًا"
+  "deleteAccountConfirm": "احذف نهائيًا",
+  "goodMorning": "صباح الخير",
+  "goodEvening": "مساء الخير",
+  "safeToSpendToday": "تقدر تصرف اليوم",
+  "safeToSpendNone": "ما بقي شيء للصرف في هذه الفترة",
+  "availableOf": "المتاح {amount}",
+  "budgetShort": "من الميزانية",
+  "whereMoneyWent": "وين راح صرفك",
+  "seeAll": "عرض الكل",
+  "plannedSavingNote": "الادخار المخطط محجوز أولًا"
 }

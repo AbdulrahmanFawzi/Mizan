@@ -14,7 +14,7 @@ void main() {
 
   String textOf(WidgetTester tester, Key key) => tester
       .widgetList<Text>(find.descendant(of: find.byKey(key), matching: find.byType(Text)))
-      .map((t) => t.data)
+      .map((t) => t.data ?? t.textSpan?.toPlainText())
       .join(' ');
 
   testWidgets('the whole MVP 0 journey, from sign-up to account deletion', (tester) async {
@@ -63,7 +63,7 @@ void main() {
     expect(find.text('90%'), findsOneWidget);
 
     // So did the dashboard
-    await tester.tap(find.byIcon(Icons.home_outlined));
+    await tester.tap(find.byKey(const Key('homeTab')));
     await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(textOf(tester, const Key('totalSpent')), contains('450'));
 
@@ -118,7 +118,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Settings: change the income, then delete the account (UC-06)
-    await tester.tap(find.byIcon(Icons.home_outlined));
+    await tester.tap(find.byKey(const Key('homeTab')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('openSettings')));
     await tester.pumpAndSettle(const Duration(seconds: 1));

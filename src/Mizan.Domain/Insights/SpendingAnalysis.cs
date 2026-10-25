@@ -39,6 +39,31 @@ public static class SpendingAnalysis
         return Money.Of(decimal.Round(projected, 2, MidpointRounding.AwayFromZero), spent.Currency);
     }
 
+    // BR-N7: "you can spend today". Planned savings that haven't been saved yet are set aside first.
+    // Rounded down to a whole riyal so it never suggests more than the user has. Never negative.
+    public static Money? SafeToSpendToday(
+        Money income,
+        Money totalSpent,
+        Money remainingPlannedSavings,
+        BudgetPeriod period,
+        DateOnly today)
+    {
+        if (!period.Contains(today))
+        {
+            return null;
+        }
+
+        var daysLeft = period.LengthInDays - period.DaysElapsed(today) + 1;
+        var spendable = income - totalSpent - remainingPlannedSavings;
+
+        if (!spendable.IsPositive)
+        {
+            return Money.Zero(income.Currency);
+        }
+
+        return Money.Of(Math.Floor(spendable.Amount / daysLeft), income.Currency);
+    }
+
     public static IReadOnlyList<Insight> Generate(
         Budget budget,
         IReadOnlyDictionary<Guid, Money> spentByCategory,

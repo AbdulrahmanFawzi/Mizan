@@ -55,6 +55,8 @@ class Dashboard {
     required this.monthlyIncome,
     required this.totalSpent,
     required this.available,
+    required this.safeToSpendToday,
+    required this.daysLeft,
     required this.budgetUsagePercent,
     required this.topSpending,
     required this.goals,
@@ -67,6 +69,8 @@ class Dashboard {
         monthlyIncome: moneyAmount(json['monthlyIncome']),
         totalSpent: moneyAmount(json['totalSpent']),
         available: moneyAmount(json['available']),
+        safeToSpendToday: json['safeToSpendToday'] == null ? null : moneyAmount(json['safeToSpendToday']),
+        daysLeft: json['daysLeft'] as int,
         budgetUsagePercent: (json['budgetUsagePercent'] as num?)?.toDouble(),
         topSpending: listOf(json['topSpending'], TopSpending.fromJson),
         goals: listOf(json['goals'], Goal.fromJson),
@@ -78,6 +82,12 @@ class Dashboard {
   final double monthlyIncome;
   final double totalSpent;
   final double available;
+
+  // BR-N7, calculated by the API. null outside the current period.
+  final double? safeToSpendToday;
+
+  // Including today.
+  final int daysLeft;
 
   // null when no category has a limit yet.
   final double? budgetUsagePercent;

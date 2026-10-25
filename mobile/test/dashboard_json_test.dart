@@ -9,6 +9,8 @@ void main() {
       'monthlyIncome': {'amount': 10000.00, 'currency': 'SAR'},
       'totalSpent': {'amount': 460, 'currency': 'SAR'},
       'available': {'amount': 9540.00, 'currency': 'SAR'},
+      'safeToSpendToday': {'amount': 1060, 'currency': 'SAR'},
+      'daysLeft': 9,
       'budgetUsagePercent': 92,
       'topSpending': [
         {'categoryId': 'c1', 'name': 'الوقود', 'spent': {'amount': 460.00, 'currency': 'SAR'}},
@@ -36,6 +38,8 @@ void main() {
 
     expect(dashboard.period.daysLeft, 9);
     expect(dashboard.available, 9540);
+    expect(dashboard.safeToSpendToday, 1060);
+    expect(dashboard.daysLeft, 9);
     expect(dashboard.budgetUsagePercent, 92);
     expect(dashboard.topSpending.single.name, 'الوقود');
     expect(dashboard.goals.single.status, GoalStatus.active);
@@ -49,6 +53,8 @@ void main() {
       'monthlyIncome': {'amount': 10000.00, 'currency': 'SAR'},
       'totalSpent': {'amount': 0, 'currency': 'SAR'},
       'available': {'amount': 10000.00, 'currency': 'SAR'},
+      'safeToSpendToday': null,
+      'daysLeft': 9,
       'budgetUsagePercent': null,
       'topSpending': <Object>[],
       'goals': <Object>[],

@@ -62,7 +62,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AuthScaffold(children: [
+    return AuthScaffold(title: l10n.register, children: [
       Form(
         key: _formKey,
         child: Column(

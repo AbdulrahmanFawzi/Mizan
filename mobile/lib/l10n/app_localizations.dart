@@ -865,6 +865,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete permanently'**
   String get deleteAccountConfirm;
+
+  /// No description provided for @goodMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get goodMorning;
+
+  /// No description provided for @goodEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get goodEvening;
+
+  /// No description provided for @safeToSpendToday.
+  ///
+  /// In en, this message translates to:
+  /// **'You can spend today'**
+  String get safeToSpendToday;
+
+  /// No description provided for @safeToSpendNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing left to spend this period'**
+  String get safeToSpendNone;
+
+  /// No description provided for @availableOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} available'**
+  String availableOf(String amount);
+
+  /// No description provided for @budgetShort.
+  ///
+  /// In en, this message translates to:
+  /// **'of budget'**
+  String get budgetShort;
+
+  /// No description provided for @whereMoneyWent.
+  ///
+  /// In en, this message translates to:
+  /// **'Where your money went'**
+  String get whereMoneyWent;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @plannedSavingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned savings are set aside first'**
+  String get plannedSavingNote;
 }
 
 class _AppLocalizationsDelegate

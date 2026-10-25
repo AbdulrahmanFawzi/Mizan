@@ -451,4 +451,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteAccountConfirm => 'احذف نهائيًا';
+
+  @override
+  String get goodMorning => 'صباح الخير';
+
+  @override
+  String get goodEvening => 'مساء الخير';
+
+  @override
+  String get safeToSpendToday => 'تقدر تصرف اليوم';
+
+  @override
+  String get safeToSpendNone => 'ما بقي شيء للصرف في هذه الفترة';
+
+  @override
+  String availableOf(String amount) {
+    return 'المتاح $amount';
+  }
+
+  @override
+  String get budgetShort => 'من الميزانية';
+
+  @override
+  String get whereMoneyWent => 'وين راح صرفك';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get plannedSavingNote => 'الادخار المخطط محجوز أولًا';
 }

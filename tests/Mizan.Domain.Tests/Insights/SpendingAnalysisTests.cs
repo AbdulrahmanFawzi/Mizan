@@ -86,4 +86,56 @@ public class SpendingAnalysisTests
         var projected = Assert.Single(insights.OfType<ProjectedOverBudgetInsight>());
         Assert.Equal(fuel, projected.CategoryId);
     }
+
+    // --- Safe to spend today (BR-N7) ---
+
+    [Fact]
+    public void SafeToSpendToday_SplitsWhatIsLeftOverRemainingDaysIncludingToday()
+    {
+        // October has 31 days. On the 22nd, 10 days are left including today.
+        // 10,000 - 2,940 spent = 7,060 -> 706 per day.
+        var safe = SpendingAnalysis.SafeToSpendToday(Sar(10_000), Sar(2_940), Sar(0), October, D("2026-10-22"));
+
+        Assert.Equal(Sar(706), safe);
+    }
+
+    [Fact]
+    public void SafeToSpendToday_SetsAsidePlannedSavingsFirst()
+    {
+        // 7,060 left, but 2,000 is still planned for savings -> 5,060 / 10 = 506.
+        var safe = SpendingAnalysis.SafeToSpendToday(Sar(10_000), Sar(2_940), Sar(2_000), October, D("2026-10-22"));
+
+        Assert.Equal(Sar(506), safe);
+    }
+
+    [Fact]
+    public void SafeToSpendToday_RoundsDownToWholeRiyal()
+    {
+        // 1,000 / 3 days = 333.33 -> 333 (never suggest more than there is)
+        var safe = SpendingAnalysis.SafeToSpendToday(Sar(1_000), Sar(0), Sar(0), October, D("2026-10-29"));
+
+        Assert.Equal(Sar(333), safe);
+    }
+
+    [Fact]
+    public void SafeToSpendToday_OnTheLastDay_IsEverythingLeft()
+    {
+        var safe = SpendingAnalysis.SafeToSpendToday(Sar(1_000), Sar(400), Sar(0), October, D("2026-10-31"));
+
+        Assert.Equal(Sar(600), safe);
+    }
+
+    [Fact]
+    public void SafeToSpendToday_OverspentPeriod_IsZeroNotNegative()
+    {
+        var safe = SpendingAnalysis.SafeToSpendToday(Sar(1_000), Sar(1_200), Sar(0), October, D("2026-10-20"));
+
+        Assert.Equal(Sar(0), safe);
+    }
+
+    [Fact]
+    public void SafeToSpendToday_OutsideThePeriod_IsNull()
+    {
+        Assert.Null(SpendingAnalysis.SafeToSpendToday(Sar(1_000), Sar(0), Sar(0), October, D("2026-11-02")));
+    }
 }
