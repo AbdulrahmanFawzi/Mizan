@@ -70,10 +70,7 @@ void main() {
   });
 
   Future<ProviderContainer> pumpSettings(WidgetTester tester) async {
-    // A phone-sized screen (iPhone 16 Plus: 430 x 932 points) instead of the 800 x 600 test default.
-    tester.view.physicalSize = const Size(1290, 2796);
-    tester.view.devicePixelRatio = 3;
-    addTearDown(tester.view.reset);
+    usePhoneScreen(tester);
 
     await tester.pumpWidget(testApp(const SettingsScreen(), overrides: [
       sharedPreferencesProvider.overrideWithValue(preferences),
@@ -139,6 +136,7 @@ void main() {
 
   testWidgets('editing the profile sends the new values', (tester) async {
     final actions = FakeProfileActions();
+    usePhoneScreen(tester);
     await tester.pumpWidget(testApp(const EditProfileScreen(), overrides: [
       profileRepositoryProvider.overrideWithValue(repository),
       profileActionsProvider.overrideWithValue(actions),

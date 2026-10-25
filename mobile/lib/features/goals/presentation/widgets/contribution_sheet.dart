@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/format/formatters.dart';
 import '../../../../core/network/api_exception.dart';
+import '../../../../core/theme/mizan_colors.dart';
+import '../../../../core/widgets/amount_field.dart';
+import '../../../../core/widgets/ui.dart';
 import '../../../../core/widgets/validators.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/auth_scaffold.dart' show FormErrorText;
@@ -77,40 +80,46 @@ class _ContributionSheetState extends ConsumerState<ContributionSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = context.mizan;
     final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + MediaQuery.viewInsetsOf(context).bottom),
       child: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('${l10n.addSaving} · ${widget.goal.name}', style: theme.textTheme.titleLarge),
-            const SizedBox(height: 4),
-            Text(l10n.addSavingExplain, style: theme.textTheme.bodySmall),
-            const SizedBox(height: 16),
-            TextFormField(
+            Row(children: [
+              IconTile(icon: Icons.savings_rounded, color: colors.mintOnLight, size: 48),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(l10n.addSaving, style: theme.textTheme.titleLarge),
+                  Text(widget.goal.name, style: TextStyle(color: colors.textMuted)),
+                ]),
+              ),
+            ]),
+            const SizedBox(height: 20),
+            AmountField(
               key: const Key('contributionAmountField'),
               controller: _amount,
               autofocus: true,
-              decoration: InputDecoration(
-                labelText: l10n.amount,
-                helperText: '${l10n.remainingLabel}: ${context.money(widget.goal.remaining)}',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              compact: true,
+              label: l10n.amount,
+              helper: '${l10n.remainingLabel}: ${context.money(widget.goal.remaining)}',
               validator: (v) => Validators.positiveAmount(v, l10n),
             ),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: _pickDate,
-              child: InputDecorator(
-                decoration: InputDecoration(labelText: l10n.date, suffixIcon: const Icon(Icons.calendar_today_outlined)),
-                child: Text(context.longDate(_date)),
-              ),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
+            PickerTile(icon: Icons.calendar_today_rounded, label: l10n.date, value: context.longDate(_date), onTap: _pickDate),
+            const SizedBox(height: 12),
+            Row(children: [
+              Icon(Icons.info_outline_rounded, size: 16, color: colors.textMuted),
+              const SizedBox(width: 6),
+              Expanded(child: Text(l10n.addSavingExplain, style: TextStyle(color: colors.textMuted, fontSize: 12))),
+            ]),
+            const SizedBox(height: 20),
             FormErrorText(_error),
             FilledButton(
               key: const Key('saveContribution'),

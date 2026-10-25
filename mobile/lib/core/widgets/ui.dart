@@ -102,3 +102,102 @@ class IconTile extends StatelessWidget {
         child: Icon(icon, color: color, size: size * 0.52),
       );
 }
+
+// The top of a tab screen: a big title, an optional line under it, and an action on the side.
+// Tab screens use this instead of an AppBar so they feel like the dashboard.
+class PageHeader extends StatelessWidget {
+  const PageHeader({super.key, required this.title, this.subtitle, this.action});
+
+  final String title;
+  final String? subtitle;
+  final Widget? action;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title, style: Theme.of(context).textTheme.headlineSmall),
+              if (subtitle != null) Text(subtitle!, style: TextStyle(color: context.mizan.textMuted)),
+            ]),
+          ),
+          ?action,
+        ]),
+      );
+}
+
+// A thick rounded progress bar that animates to its value.
+class ProgressBar extends StatelessWidget {
+  const ProgressBar({super.key, required this.value, required this.color, this.height = 10});
+
+  final double value;
+  final Color color;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+        borderRadius: BorderRadius.circular(height),
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: value.clamp(0, 1)),
+          duration: const Duration(milliseconds: 700),
+          curve: Curves.easeOutCubic,
+          builder: (_, animated, _) => LinearProgressIndicator(
+            value: animated,
+            minHeight: height,
+            color: color,
+            backgroundColor: color.withValues(alpha: 0.12),
+          ),
+        ),
+      );
+}
+
+// A tappable row that looks like a form field: used for pickers (date, salary day).
+class PickerTile extends StatelessWidget {
+  const PickerTile({super.key, required this.icon, required this.label, required this.value, this.onTap});
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mizan;
+    return Material(
+      color: colors.fieldFill,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(children: [
+            IconTile(icon: icon, color: colors.mintOnLight, size: 38),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(label, style: TextStyle(color: colors.textMuted, fontSize: 12)),
+                Text(value, style: Theme.of(context).textTheme.titleSmall),
+              ]),
+            ),
+            Icon(Icons.chevron_right_rounded, color: colors.textMuted, textDirection: Directionality.of(context)),
+          ]),
+        ),
+      ),
+    );
+  }
+}
+
+// A small label above a group of fields inside a form.
+class FieldLabel extends StatelessWidget {
+  const FieldLabel(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsetsDirectional.only(start: 4, bottom: 8, top: 20),
+        child: Text(text, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: context.mizan.textMuted)),
+      );
+}

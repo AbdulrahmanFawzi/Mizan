@@ -1,31 +1,52 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/format/formatters.dart';
+import '../../../../core/theme/mizan_colors.dart';
+import '../../../../core/widgets/money_text.dart';
+import '../../../../core/widgets/ui.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../categories/data/category.dart';
+import '../../../categories/presentation/category_label.dart';
+import '../../../categories/presentation/category_visual.dart';
 import '../../data/transaction.dart';
 
 class TransactionTile extends StatelessWidget {
-  const TransactionTile({super.key, required this.transaction, required this.categoryName, required this.onTap});
+  const TransactionTile({super.key, required this.transaction, required this.category, required this.onTap});
 
   final Transaction transaction;
-  final String categoryName;
+
+  // null while the categories are still loading.
+  final Category? category;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final merchant = transaction.merchant;
+    final colors = context.mizan;
+    final category = this.category;
+    final visual = transaction.isGoalContribution
+        ? categoryVisual('', CategoryKind.savings)
+        : categoryVisual(category?.name ?? '', category?.kind ?? CategoryKind.other);
+    final subtitle = transaction.isGoalContribution ? l10n.goalContribution : transaction.merchant;
 
-    return ListTile(
+    return InkWell(
       onTap: onTap,
-      leading: CircleAvatar(
-        child: Icon(transaction.isGoalContribution ? Icons.savings_outlined : Icons.receipt_outlined),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(children: [
+          IconTile(icon: visual.icon, color: visual.color),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(category == null ? '' : categoryLabel(category, l10n), style: Theme.of(context).textTheme.titleSmall),
+              if (subtitle != null)
+                Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: colors.textMuted, fontSize: 13)),
+            ]),
+          ),
+          const SizedBox(width: 8),
+          MoneyText(transaction.amount, style: Theme.of(context).textTheme.titleMedium),
+        ]),
       ),
-      title: Text(categoryName),
-      subtitle: transaction.isGoalContribution
-          ? Text(l10n.goalContribution)
-          : (merchant == null ? null : Text(merchant)),
-      trailing: Text(context.money(transaction.amount), style: Theme.of(context).textTheme.titleSmall),
     );
   }
 }
@@ -46,8 +67,8 @@ class DayHeader extends StatelessWidget {
     };
 
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 4),
-      child: Text(label, style: Theme.of(context).textTheme.labelLarge),
+      padding: const EdgeInsetsDirectional.only(start: 4, bottom: 8),
+      child: Text(label, style: Theme.of(context).textTheme.labelLarge?.copyWith(color: context.mizan.textMuted)),
     );
   }
 }

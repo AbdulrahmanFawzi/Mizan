@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/format/formatters.dart';
 import '../../../core/network/api_exception.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/theme/mizan_colors.dart';
+import '../../../core/widgets/money_text.dart';
 import '../../../l10n/app_localizations.dart';
 import '../application/goal_actions.dart';
 import '../data/goal.dart';
@@ -62,13 +64,13 @@ class GoalDetailScreen extends ConsumerWidget {
               key: const Key('editGoal'),
               tooltip: l10n.editGoal,
               onPressed: () => context.push(Routes.editGoal(loaded.id), extra: loaded),
-              icon: const Icon(Icons.edit_outlined),
+              icon: const Icon(Icons.edit_rounded),
             ),
             IconButton(
               key: const Key('archiveGoal'),
               tooltip: l10n.archiveGoal,
               onPressed: () => _archive(context, ref, loaded),
-              icon: const Icon(Icons.archive_outlined),
+              icon: const Icon(Icons.archive_rounded),
             ),
           ],
         ],
@@ -90,66 +92,48 @@ class _GoalDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final colors = context.mizan;
     final completed = goal.status == GoalStatus.completed;
     final overdue = goal.status == GoalStatus.overdue;
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
       children: [
-        Center(
-          child: SizedBox.square(
-            dimension: 180,
-            child: Stack(fit: StackFit.expand, children: [
-              CircularProgressIndicator(
-                value: goal.percentComplete / 100,
-                strokeWidth: 14,
-                color: completed ? Colors.green : null,
-                backgroundColor: theme.colorScheme.surfaceContainerHighest,
-              ),
-              Center(
-                child: Text(
-                  '${goal.percentComplete.toStringAsFixed(0)}%',
-                  style: theme.textTheme.displaySmall?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ]),
-          ),
-        ),
+        _ProgressHero(goal: goal),
         const SizedBox(height: 16),
-        if (completed)
-          Center(
-            child: Chip(
-              key: const Key('goalCompletedChip'),
-              avatar: const Icon(Icons.check_circle, color: Colors.green),
-              label: Text(l10n.statusCompleted),
+        Row(children: [
+          Expanded(
+            child: _StatTile(
+              icon: Icons.hourglass_bottom_rounded,
+              label: l10n.remainingLabel,
+              value: MoneyText(goal.remaining, style: Theme.of(context).textTheme.titleMedium),
             ),
           ),
-        if (overdue)
-          Center(
-            child: Chip(
-              avatar: Icon(Icons.schedule, color: theme.colorScheme.error),
-              label: Text('${l10n.statusOverdue} · ${l10n.extendDateHint}'),
+          const SizedBox(width: 12),
+          Expanded(
+            child: _StatTile(
+              icon: Icons.event_rounded,
+              label: l10n.targetDate,
+              value: Text(context.mediumDate(goal.targetDate), style: Theme.of(context).textTheme.titleMedium),
             ),
           ),
-        const SizedBox(height: 8),
-        Card.outlined(
-          child: Column(children: [
-            _Row(l10n.saved, '${context.money(goal.currentAmount)} / ${context.money(goal.targetAmount)}'),
-            _Row(l10n.remainingLabel, context.money(goal.remaining)),
-            _Row(l10n.targetDate, context.longDate(goal.targetDate)),
-            if (!completed && !overdue) ...[
-              _Row(l10n.perMonth, context.money(goal.requiredPerPeriod), key: const Key('requiredPerMonth')),
-              _Row('', l10n.monthsLeft(goal.remainingPeriods)),
-            ],
-          ]),
-        ),
+        ]),
+        if (!completed && !overdue) ...[
+          const SizedBox(height: 12),
+          _StatTile(
+            key: const Key('requiredPerMonth'),
+            icon: Icons.calendar_month_rounded,
+            label: l10n.perMonth,
+            value: MoneyText(goal.requiredPerPeriod, style: Theme.of(context).textTheme.titleLarge?.copyWith(color: colors.mintOnLight)),
+            trailing: Text(l10n.monthsLeft(goal.remainingPeriods), style: TextStyle(color: colors.textMuted)),
+          ),
+        ],
         const SizedBox(height: 24),
         if (goal.canReceiveSavings)
           FilledButton.icon(
             key: const Key('addSaving'),
             onPressed: () => showContributionSheet(context, goal),
-            icon: const Icon(Icons.savings_outlined),
+            icon: const Icon(Icons.savings_rounded),
             label: Text(l10n.addSaving),
           ),
       ],
@@ -157,16 +141,125 @@ class _GoalDetails extends StatelessWidget {
   }
 }
 
-class _Row extends StatelessWidget {
-  const _Row(this.label, this.value, {super.key});
+// The ring is the goal: how far along it is, at a glance.
+class _ProgressHero extends StatelessWidget {
+  const _ProgressHero({required this.goal});
 
-  final String label;
-  final String value;
+  final Goal goal;
 
   @override
-  Widget build(BuildContext context) => ListTile(
-        dense: true,
-        title: Text(label),
-        trailing: Text(value, style: Theme.of(context).textTheme.titleSmall),
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colors = context.mizan;
+    final theme = Theme.of(context);
+    final completed = goal.status == GoalStatus.completed;
+    final overdue = goal.status == GoalStatus.overdue;
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(22, 28, 22, 22),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.topStart,
+          end: AlignmentDirectional.bottomEnd,
+          colors: [colors.ink, colors.inkSoft],
+        ),
+      ),
+      child: Column(children: [
+        SizedBox.square(
+          dimension: 170,
+          child: Stack(fit: StackFit.expand, children: [
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: (goal.percentComplete / 100).clamp(0, 1)),
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeOutCubic,
+              builder: (_, value, _) => CircularProgressIndicator(
+                value: value,
+                strokeWidth: 14,
+                strokeCap: StrokeCap.round,
+                color: overdue ? colors.warning : colors.mint,
+                backgroundColor: colors.onInk.withValues(alpha: 0.1),
+              ),
+            ),
+            Center(
+              child: Text(
+                '${goal.percentComplete.toStringAsFixed(0)}%',
+                style: theme.textTheme.displaySmall?.copyWith(color: colors.onInk, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 20),
+        MoneyText(
+          goal.currentAmount,
+          style: theme.textTheme.headlineSmall?.copyWith(color: colors.onInk, fontWeight: FontWeight.w700),
+          currencyColor: colors.onInkMuted,
+        ),
+        Text(l10n.ofAmount(context.money(goal.targetAmount)), style: TextStyle(color: colors.onInkMuted)),
+        if (completed) ...[
+          const SizedBox(height: 14),
+          _Badge(
+            key: const Key('goalCompletedChip'),
+            icon: Icons.emoji_events_rounded,
+            text: l10n.statusCompleted,
+            color: colors.mint,
+          ),
+        ],
+        if (overdue) ...[
+          const SizedBox(height: 14),
+          _Badge(icon: Icons.schedule_rounded, text: '${l10n.statusOverdue} · ${l10n.extendDateHint}', color: colors.warning),
+        ],
+      ]),
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  const _Badge({super.key, required this.icon, required this.text, required this.color});
+
+  final IconData icon;
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(20)),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 6),
+          Flexible(child: Text(text, style: TextStyle(color: color, fontWeight: FontWeight.w600))),
+        ]),
       );
+}
+
+class _StatTile extends StatelessWidget {
+  const _StatTile({super.key, required this.icon, required this.label, required this.value, this.trailing});
+
+  final IconData icon;
+  final String label;
+  final Widget value;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mizan;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(children: [
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Icon(icon, size: 20, color: colors.textMuted),
+              const SizedBox(height: 10),
+              Text(label, style: TextStyle(color: colors.textMuted, fontSize: 13)),
+              const SizedBox(height: 2),
+              FittedBox(fit: BoxFit.scaleDown, alignment: AlignmentDirectional.centerStart, child: value),
+            ]),
+          ),
+          ?trailing,
+        ]),
+      ),
+    );
+  }
 }

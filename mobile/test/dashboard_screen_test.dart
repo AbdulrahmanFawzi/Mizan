@@ -54,9 +54,7 @@ Budget _budget({bool empty = false}) => Budget(
     );
 
 Future<void> _pump(WidgetTester tester, Dashboard dashboard, {Budget? budget, Locale locale = const Locale('en')}) async {
-  tester.view.physicalSize = const Size(1290, 2796);
-  tester.view.devicePixelRatio = 3;
-  addTearDown(tester.view.reset);
+  usePhoneScreen(tester);
 
   await tester.pumpWidget(testApp(
     const DashboardScreen(),

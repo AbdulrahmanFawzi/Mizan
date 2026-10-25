@@ -919,6 +919,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Planned savings are set aside first'**
   String get plannedSavingNote;
+
+  /// No description provided for @spentThisPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent this period'**
+  String get spentThisPeriod;
+
+  /// No description provided for @savedForGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved toward your goals'**
+  String get savedForGoals;
+
+  /// No description provided for @ofAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'of {amount}'**
+  String ofAmount(String amount);
+
+  /// No description provided for @notifNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get notifNew;
+
+  /// No description provided for @notifEarlier.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier'**
+  String get notifEarlier;
+
+  /// No description provided for @goalDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get goalDetails;
 }
 
 class _AppLocalizationsDelegate

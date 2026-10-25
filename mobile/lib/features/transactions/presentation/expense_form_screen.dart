@@ -4,11 +4,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/format/formatters.dart';
 import '../../../core/network/api_exception.dart';
+import '../../../core/theme/mizan_colors.dart';
+import '../../../core/widgets/amount_field.dart';
+import '../../../core/widgets/ui.dart';
 import '../../../core/widgets/validators.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_scaffold.dart' show FormErrorText;
 import '../../categories/data/category.dart';
 import '../../categories/presentation/category_label.dart';
+import '../../categories/presentation/category_visual.dart';
 import '../application/transactions_controller.dart';
 import '../data/transaction.dart';
 
@@ -139,7 +143,7 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
               key: const Key('deleteExpense'),
               tooltip: l10n.delete,
               onPressed: _saving ? null : _delete,
-              icon: const Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline_rounded),
             ),
         ],
       ),
@@ -154,6 +158,7 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
   }
 
   Widget _buildForm(BuildContext context, AppLocalizations l10n, List<Category> categories, bool locked) {
+    final colors = context.mizan;
     // Default for a new expense: the first category the user created, otherwise "Other".
     _categoryId ??= (categories.where((c) => c.kind == CategoryKind.regular).firstOrNull ??
             categories.firstWhere((c) => c.kind == CategoryKind.other))
@@ -162,42 +167,40 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
     return Form(
       key: _formKey,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
-          TextFormField(
+          AmountField(
             key: const Key('amountField'),
             controller: _amount,
             autofocus: !_isEdit,
-            decoration: InputDecoration(labelText: l10n.amount),
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             validator: (v) => Validators.positiveAmount(v, l10n),
           ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            initialValue: _categoryId,
-            decoration: InputDecoration(labelText: l10n.category, helperText: locked ? l10n.goalCategoryLocked : null),
-            items: [
-              for (final category in categories)
-                DropdownMenuItem(value: category.id, child: Text(categoryLabel(category, l10n))),
-            ],
-            onChanged: locked ? null : (id) => setState(() => _categoryId = id),
-          ),
-          const SizedBox(height: 16),
-          InkWell(
-            onTap: _pickDate,
-            child: InputDecorator(
-              decoration: InputDecoration(labelText: l10n.date, suffixIcon: const Icon(Icons.calendar_today_outlined)),
-              child: Text(context.longDate(_date)),
+          FieldLabel(l10n.category),
+          Wrap(spacing: 8, runSpacing: 8, children: [
+            for (final category in categories)
+              _CategoryChip(
+                key: Key('categoryChip-${category.id}'),
+                category: category,
+                label: categoryLabel(category, l10n),
+                selected: category.id == _categoryId,
+                onTap: locked ? null : () => setState(() => _categoryId = category.id),
+              ),
+          ]),
+          if (locked)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 4, top: 8),
+              child: Text(l10n.goalCategoryLocked, style: TextStyle(color: colors.textMuted, fontSize: 12)),
             ),
-          ),
-          const SizedBox(height: 16),
+          FieldLabel(l10n.date),
+          _DatePills(date: _date, onPick: _pickDate, onChanged: (date) => setState(() => _date = date)),
+          const SizedBox(height: 20),
           TextFormField(
             key: const Key('merchantField'),
             controller: _merchant,
-            decoration: InputDecoration(labelText: l10n.merchantOptional),
+            decoration: InputDecoration(labelText: l10n.merchantOptional, prefixIcon: const Icon(Icons.storefront_rounded)),
             maxLength: 100,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           FormErrorText(_error),
           FilledButton(
             key: const Key('saveExpense'),
@@ -207,6 +210,122 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
                 : Text(l10n.save),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// Categories as tappable chips with their icon: one tap instead of opening a dropdown.
+class _CategoryChip extends StatelessWidget {
+  const _CategoryChip({super.key, required this.category, required this.label, required this.selected, this.onTap});
+
+  final Category category;
+  final String label;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mizan;
+    final scheme = Theme.of(context).colorScheme;
+    final visual = categoryVisual(category.name, category.kind);
+    final disabled = onTap == null && !selected;
+
+    return Opacity(
+      opacity: disabled ? 0.4 : 1,
+      child: Material(
+        color: selected ? scheme.primary : scheme.surface,
+        shape: StadiumBorder(side: BorderSide(color: selected ? scheme.primary : colors.border)),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(6, 6, 14, 6),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: selected ? scheme.onPrimary.withValues(alpha: 0.15) : visual.color.withValues(alpha: 0.14),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(visual.icon, size: 16, color: selected ? scheme.onPrimary : visual.color),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: TextStyle(fontWeight: FontWeight.w600, color: selected ? scheme.onPrimary : scheme.onSurface),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Most expenses are from today or yesterday, so those are one tap away; any other day opens the calendar.
+class _DatePills extends StatelessWidget {
+  const _DatePills({required this.date, required this.onPick, required this.onChanged});
+
+  final DateTime date;
+  final VoidCallback onPick;
+  final ValueChanged<DateTime> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final today = DateUtils.dateOnly(DateTime.now());
+    final yesterday = today.subtract(const Duration(days: 1));
+    final isOther = date != today && date != yesterday;
+
+    return Row(children: [
+      _Pill(label: l10n.today, selected: date == today, onTap: () => onChanged(today)),
+      const SizedBox(width: 8),
+      _Pill(label: l10n.yesterday, selected: date == yesterday, onTap: () => onChanged(yesterday)),
+      const SizedBox(width: 8),
+      Expanded(
+        child: _Pill(
+          label: isOther ? context.mediumDate(date) : l10n.date,
+          icon: Icons.calendar_today_rounded,
+          selected: isOther,
+          onTap: onPick,
+        ),
+      ),
+    ]);
+  }
+}
+
+class _Pill extends StatelessWidget {
+  const _Pill({required this.label, required this.selected, required this.onTap, this.icon});
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  final IconData? icon;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mizan;
+    final scheme = Theme.of(context).colorScheme;
+    final foreground = selected ? scheme.onPrimary : scheme.onSurface;
+
+    return Material(
+      color: selected ? scheme.primary : colors.fieldFill,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
+            if (icon != null) ...[Icon(icon, size: 16, color: foreground), const SizedBox(width: 6)],
+            Flexible(
+              child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.w600, color: foreground)),
+            ),
+          ]),
+        ),
       ),
     );
   }

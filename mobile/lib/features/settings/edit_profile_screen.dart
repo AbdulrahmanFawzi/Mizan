@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/network/api_exception.dart';
+import '../../core/widgets/amount_field.dart';
 import '../../core/widgets/validators.dart';
 import '../../l10n/app_localizations.dart';
 import '../auth/presentation/auth_scaffold.dart' show FormErrorText;
@@ -86,26 +87,33 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
     return Form(
       key: _formKey,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
           TextFormField(
             key: const Key('profileNameField'),
             controller: _name,
-            decoration: InputDecoration(labelText: l10n.name),
+            decoration: InputDecoration(labelText: l10n.name, prefixIcon: const Icon(Icons.person_rounded)),
             validator: (v) => Validators.required(v, l10n),
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          AmountField(
             key: const Key('profileIncomeField'),
             controller: _income,
-            decoration: InputDecoration(labelText: l10n.monthlyIncome, helperText: l10n.incomeChangeHint, helperMaxLines: 2),
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            label: l10n.monthlyIncome,
+            helper: l10n.incomeChangeHint,
             validator: (v) => Validators.positiveAmount(v, l10n),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<int>(
             initialValue: _periodStartDay,
-            decoration: InputDecoration(labelText: l10n.periodStartDay, helperText: l10n.salaryDayChangeHint, helperMaxLines: 2),
+            borderRadius: BorderRadius.circular(16),
+            menuMaxHeight: 320,
+            decoration: InputDecoration(
+              labelText: l10n.periodStartDay,
+              helperText: l10n.salaryDayChangeHint,
+              helperMaxLines: 2,
+              prefixIcon: const Icon(Icons.event_repeat_rounded),
+            ),
             items: [for (var day = 1; day <= 31; day++) DropdownMenuItem(value: day, child: Text('$day'))],
             onChanged: (day) => setState(() => _periodStartDay = day!),
           ),

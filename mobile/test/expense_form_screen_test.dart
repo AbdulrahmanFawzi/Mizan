@@ -35,6 +35,7 @@ void main() {
   setUp(() => actions = FakeExpenseActions());
 
   Future<void> pump(WidgetTester tester, {Transaction? existing}) async {
+    usePhoneScreen(tester);
     await tester.pumpWidget(testApp(
       ExpenseFormScreen(existing: existing),
       overrides: [
@@ -130,7 +131,11 @@ void main() {
     await pump(tester, existing: contribution);
 
     expect(find.text('Money saved toward a goal stays in Savings'), findsOneWidget);
-    final dropdown = tester.widget<DropdownButton<String>>(find.byType(DropdownButton<String>));
-    expect(dropdown.onChanged, isNull);
+
+    // Tapping another category does nothing: it stays in Savings.
+    await tester.tap(find.text('Fuel'));
+    await tester.tap(find.byKey(const Key('saveExpense')));
+    await tester.pumpAndSettle();
+    expect(actions.updated.single.$2.categoryId, 'savings');
   });
 }

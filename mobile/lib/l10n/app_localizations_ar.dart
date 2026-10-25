@@ -480,4 +480,24 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get plannedSavingNote => 'الادخار المخطط محجوز أولًا';
+
+  @override
+  String get spentThisPeriod => 'صرفك في هذه الفترة';
+
+  @override
+  String get savedForGoals => 'مدّخر لأهدافك';
+
+  @override
+  String ofAmount(String amount) {
+    return 'من $amount';
+  }
+
+  @override
+  String get notifNew => 'جديدة';
+
+  @override
+  String get notifEarlier => 'سابقة';
+
+  @override
+  String get goalDetails => 'التفاصيل';
 }

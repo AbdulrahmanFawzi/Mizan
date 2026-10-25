@@ -17,12 +17,22 @@ void main() {
       .map((t) => t.data ?? t.textSpan?.toPlainText())
       .join(' ');
 
+  // pumpAndSettle only waits for animations, not for real async work like reading secure storage
+  // on a cold start. This keeps pumping until the widget is actually on screen.
+  Future<void> pumpUntilFound(WidgetTester tester, Finder finder) async {
+    final deadline = DateTime.now().add(const Duration(seconds: 15));
+    while (finder.evaluate().isEmpty) {
+      if (DateTime.now().isAfter(deadline)) throw TestFailure('Timed out waiting for $finder');
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+  }
+
   testWidgets('the whole MVP 0 journey, from sign-up to account deletion', (tester) async {
     await const FlutterSecureStorage().deleteAll();
     final email = 'it-${DateTime.now().millisecondsSinceEpoch}@example.com';
 
     app.main();
-    await tester.pumpAndSettle();
+    await pumpUntilFound(tester, find.byKey(const Key('goToRegister')));
 
     // Register
     await tester.tap(find.byKey(const Key('goToRegister')));

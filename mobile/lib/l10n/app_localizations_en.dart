@@ -480,4 +480,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get plannedSavingNote => 'Planned savings are set aside first';
+
+  @override
+  String get spentThisPeriod => 'Spent this period';
+
+  @override
+  String get savedForGoals => 'Saved toward your goals';
+
+  @override
+  String ofAmount(String amount) {
+    return 'of $amount';
+  }
+
+  @override
+  String get notifNew => 'New';
+
+  @override
+  String get notifEarlier => 'Earlier';
+
+  @override
+  String get goalDetails => 'Details';
 }

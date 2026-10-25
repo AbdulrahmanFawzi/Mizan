@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/api_exception.dart';
+import '../../../../core/theme/mizan_colors.dart';
+import '../../../../core/widgets/amount_field.dart';
+import '../../../../core/widgets/ui.dart';
 import '../../../../core/widgets/validators.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/auth_scaffold.dart' show FormErrorText;
 import '../../../categories/data/category.dart';
 import '../../../categories/presentation/category_label.dart';
+import '../../../categories/presentation/category_visual.dart';
 import '../../application/budget_actions.dart';
 import '../../data/budget.dart';
 
@@ -118,28 +122,51 @@ class _CategoryEditorSheetState extends ConsumerState<CategoryEditorSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = context.mizan;
+    final theme = Theme.of(context);
     final existing = widget.existing;
-    final isSavings = existing?.kind == CategoryKind.savings;
+    final kind = existing?.kind ?? CategoryKind.regular;
+    final isSavings = kind == CategoryKind.savings;
 
     return Padding(
       // Keep the form above the keyboard.
-      padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + MediaQuery.viewInsetsOf(context).bottom),
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + MediaQuery.viewInsetsOf(context).bottom),
       child: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              _isEdit ? l10n.editCategory : l10n.addCategory,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            if (_isSystem) ...[
-              Text(categoryLabel(existing!.category, l10n), style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 4),
-              Text(l10n.systemCategoryNote, style: Theme.of(context).textTheme.bodySmall),
-            ] else
+            Row(children: [
+              // The icon follows the name as it is typed, so the user sees how the category will look.
+              ValueListenableBuilder(
+                valueListenable: _name,
+                builder: (_, value, _) {
+                  final visual = categoryVisual(value.text, kind);
+                  return IconTile(icon: visual.icon, color: visual.color, size: 48);
+                },
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(_isEdit ? l10n.editCategory : l10n.addCategory, style: theme.textTheme.titleLarge),
+                  if (_isSystem)
+                    Text(categoryLabel(existing!.category, l10n), style: TextStyle(color: colors.textMuted)),
+                ]),
+              ),
+            ]),
+            const SizedBox(height: 20),
+            if (_isSystem)
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: colors.fieldFill, borderRadius: BorderRadius.circular(14)),
+                child: Row(children: [
+                  Icon(Icons.lock_outline_rounded, size: 18, color: colors.textMuted),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(l10n.systemCategoryNote, style: TextStyle(color: colors.textMuted))),
+                ]),
+              )
+            else
               TextFormField(
                 key: const Key('categoryNameField'),
                 controller: _name,
@@ -148,18 +175,16 @@ class _CategoryEditorSheetState extends ConsumerState<CategoryEditorSheet> {
                 maxLength: 50,
                 validator: (v) => Validators.required(v, l10n),
               ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 12),
+            AmountField(
               key: const Key('categoryLimitField'),
               controller: _limit,
-              decoration: InputDecoration(
-                labelText: isSavings ? l10n.savingsTarget : l10n.monthlyLimit,
-                helperText: isSavings ? null : l10n.monthlyLimitHint,
-              ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              compact: true,
+              label: isSavings ? l10n.savingsTarget : l10n.monthlyLimit,
+              helper: isSavings ? null : l10n.monthlyLimitHint,
               validator: (v) => Validators.nonNegativeAmount(v, l10n),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             FormErrorText(_error),
             FilledButton(
               key: const Key('saveCategory'),
@@ -171,9 +196,9 @@ class _CategoryEditorSheetState extends ConsumerState<CategoryEditorSheet> {
               TextButton.icon(
                 key: const Key('deleteCategory'),
                 onPressed: _busy ? null : _delete,
-                icon: const Icon(Icons.delete_outline),
+                icon: const Icon(Icons.delete_outline_rounded),
                 label: Text(l10n.delete),
-                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                style: TextButton.styleFrom(foregroundColor: colors.danger, minimumSize: const Size.fromHeight(48)),
               ),
             ],
           ],

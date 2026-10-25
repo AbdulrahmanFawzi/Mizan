@@ -20,19 +20,19 @@ NotificationView describeNotification(
         title: l10n.notifBudgetExceededTitle,
         message: l10n.notifBudgetExceeded(category),
         icon: Icons.error_outline,
-        color: Colors.red,
+        color: const Color(0xFFE5484D),
       ),
     NotificationType.budgetThreshold => (
         title: l10n.notifBudgetUsedTitle,
         message: l10n.notifBudgetUsed(notification.threshold ?? 0, category),
         icon: Icons.warning_amber_rounded,
-        color: Colors.orange,
+        color: const Color(0xFFF59E0B),
       ),
     NotificationType.goalCompleted => (
         title: l10n.notifGoalCompletedTitle,
         message: l10n.notifGoalCompleted(data['goalName'] ?? ''),
         icon: Icons.emoji_events_outlined,
-        color: Colors.green,
+        color: const Color(0xFF0E9F6E),
       ),
     NotificationType.unknown => (
         title: l10n.notifOther,

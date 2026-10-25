@@ -58,6 +58,7 @@ void main() {
   setUp(() => actions = FakeBudgetActions());
 
   Future<void> pump(WidgetTester tester, Budget budget) async {
+    usePhoneScreen(tester);
     await tester.pumpWidget(testApp(
       const BudgetScreen(),
       overrides: [
@@ -143,7 +144,11 @@ void main() {
       await tester.pumpAndSettle();
       await tester.enterText(find.byKey(const Key('categoryNameField')), 'Gifts');
 
+      // The field doesn't let a minus sign in at all.
       await tester.enterText(find.byKey(const Key('categoryLimitField')), '-5');
+      expect(find.text('5'), findsOneWidget);
+
+      await tester.enterText(find.byKey(const Key('categoryLimitField')), '1.2.3');
       await tester.tap(find.byKey(const Key('saveCategory')));
       await tester.pumpAndSettle();
       expect(actions.created, isEmpty);

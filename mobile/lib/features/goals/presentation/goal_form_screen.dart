@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/format/formatters.dart';
 import '../../../core/network/api_exception.dart';
+import '../../../core/widgets/amount_field.dart';
+import '../../../core/widgets/ui.dart';
 import '../../../core/widgets/validators.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/presentation/auth_scaffold.dart' show FormErrorText;
@@ -105,43 +107,45 @@ class _GoalFormScreenState extends ConsumerState<GoalFormScreen> {
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
           children: [
             TextFormField(
               key: const Key('goalNameField'),
               controller: _name,
               autofocus: !_isEdit,
-              decoration: InputDecoration(labelText: l10n.goalName, hintText: l10n.goalNameHint),
+              decoration: InputDecoration(
+                labelText: l10n.goalName,
+                hintText: l10n.goalNameHint,
+                prefixIcon: const Icon(Icons.flag_rounded),
+              ),
               maxLength: 100,
               validator: (v) => Validators.required(v, l10n),
             ),
             const SizedBox(height: 8),
-            TextFormField(
+            AmountField(
               key: const Key('goalTargetField'),
               controller: _target,
-              decoration: InputDecoration(labelText: l10n.targetAmount),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              label: l10n.targetAmount,
               validator: (v) => Validators.positiveAmount(v, l10n),
             ),
             if (!_isEdit) ...[
-              const SizedBox(height: 16),
-              TextFormField(
+              const SizedBox(height: 12),
+              AmountField(
                 key: const Key('goalInitialField'),
                 controller: _initial,
-                decoration: InputDecoration(labelText: l10n.initialAmount),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                compact: true,
+                label: l10n.initialAmount,
                 validator: (v) => Validators.nonNegativeAmount(v, l10n),
               ),
             ],
-            const SizedBox(height: 16),
-            InkWell(
+            const SizedBox(height: 12),
+            PickerTile(
+              icon: Icons.event_rounded,
+              label: l10n.targetDate,
+              value: context.longDate(_targetDate),
               onTap: _pickDate,
-              child: InputDecorator(
-                decoration: InputDecoration(labelText: l10n.targetDate, suffixIcon: const Icon(Icons.event_outlined)),
-                child: Text(context.longDate(_targetDate)),
-              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             FormErrorText(_error),
             FilledButton(
               key: const Key('saveGoal'),

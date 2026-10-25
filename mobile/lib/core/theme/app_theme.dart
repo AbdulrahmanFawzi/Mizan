@@ -145,9 +145,11 @@ abstract final class AppTheme {
         shape: const StadiumBorder(),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
+        // Light: ink with mint text. Dark: ink is close to the background, so the selected item is mint.
         style: SegmentedButton.styleFrom(
-          selectedBackgroundColor: brand.ink,
-          selectedForegroundColor: brand.mint,
+          foregroundColor: scheme.onSurface,
+          selectedBackgroundColor: brightness == Brightness.light ? brand.ink : brand.mint,
+          selectedForegroundColor: brightness == Brightness.light ? brand.mint : brand.ink,
           side: BorderSide(color: brand.border),
         ),
       ),

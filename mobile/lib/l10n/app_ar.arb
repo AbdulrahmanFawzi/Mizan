@@ -136,5 +136,11 @@
   "budgetShort": "من الميزانية",
   "whereMoneyWent": "وين راح صرفك",
   "seeAll": "عرض الكل",
-  "plannedSavingNote": "الادخار المخطط محجوز أولًا"
+  "plannedSavingNote": "الادخار المخطط محجوز أولًا",
+  "spentThisPeriod": "صرفك في هذه الفترة",
+  "savedForGoals": "مدّخر لأهدافك",
+  "ofAmount": "من {amount}",
+  "notifNew": "جديدة",
+  "notifEarlier": "سابقة",
+  "goalDetails": "التفاصيل"
 }

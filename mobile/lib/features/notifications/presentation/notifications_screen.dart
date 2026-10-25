@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import '../../../core/network/api_exception.dart';
 import '../../../core/router/app_router.dart';
+import '../../../core/theme/mizan_colors.dart';
+import '../../../core/widgets/ui.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../categories/data/category.dart';
 import '../../categories/presentation/category_label.dart';
@@ -51,29 +53,42 @@ class NotificationsScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.notifications)),
       body: switch (notifications) {
         AsyncData(:final value) when value.isEmpty => Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              const Icon(Icons.notifications_none, size: 48),
-              const SizedBox(height: 12),
-              Text(l10n.noNotifications),
-            ]),
+            child: EmptyState(icon: Icons.notifications_none_rounded, message: l10n.noNotifications),
           ),
         AsyncData(:final value) => RefreshIndicator(
             onRefresh: () => ref.refresh(notificationsControllerProvider.future),
-            child: ListView.separated(
-              itemCount: value.length,
-              separatorBuilder: (_, _) => const Divider(height: 1),
-              itemBuilder: (context, index) => NotificationTile(
-                notification: value[index],
-                view: describeNotification(value[index], l10n, categoryNames),
-                onTap: () => _open(context, ref, value[index]),
-              ),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+              children: [
+                // Unread first, under "New"; the rest under "Earlier".
+                for (final (title, group) in [
+                  (l10n.notifNew, value.where((n) => !n.isRead).toList()),
+                  (l10n.notifEarlier, value.where((n) => n.isRead).toList()),
+                ])
+                  if (group.isNotEmpty) ...[
+                    SectionHeader(title),
+                    for (final notification in group)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: NotificationTile(
+                          notification: notification,
+                          view: describeNotification(notification, l10n, categoryNames),
+                          onTap: () => _open(context, ref, notification),
+                        ),
+                      ),
+                  ],
+              ],
             ),
           ),
         AsyncError(:final error) => Center(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(errorMessage(error, l10n)),
-              TextButton(onPressed: () => ref.invalidate(notificationsControllerProvider), child: Text(l10n.retry)),
-            ]),
+            child: EmptyState(
+              icon: Icons.cloud_off_rounded,
+              message: errorMessage(error, l10n),
+              action: OutlinedButton(
+                onPressed: () => ref.invalidate(notificationsControllerProvider),
+                child: Text(l10n.retry),
+              ),
+            ),
           ),
         _ => const Center(child: CircularProgressIndicator()),
       },
@@ -91,32 +106,49 @@ class NotificationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = context.mizan;
     final l10n = AppLocalizations.of(context);
     final unread = !notification.isRead;
     final locale = Localizations.localeOf(context).toString();
     final time = DateFormat.MMMd(locale).add_jm().format(notification.createdAt);
+    final accent = view.color ?? colors.mintOnLight;
 
-    return ListTile(
+    return Material(
       key: Key('notification-${notification.id}'),
-      onTap: onTap,
-      // Unread items stand out with a tinted background, bold title, and a dot.
-      tileColor: unread ? theme.colorScheme.primaryContainer.withValues(alpha: 0.35) : null,
-      leading: CircleAvatar(
-        backgroundColor: (view.color ?? theme.colorScheme.primary).withValues(alpha: 0.15),
-        child: Icon(view.icon, color: view.color),
+      // Unread items stand out with a mint tint, a mint border, and a dot.
+      color: unread ? colors.mint.withValues(alpha: 0.08) : theme.colorScheme.surface,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: unread ? colors.mint.withValues(alpha: 0.5) : colors.border),
       ),
-      title: Text(view.title, style: TextStyle(fontWeight: unread ? FontWeight.bold : FontWeight.normal)),
-      subtitle: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(view.message),
-        const SizedBox(height: 4),
-        Text(time, style: theme.textTheme.bodySmall),
-      ]),
-      trailing: unread
-          ? Semantics(
-              label: l10n.unread,
-              child: Icon(Icons.circle, size: 10, color: theme.colorScheme.primary),
-            )
-          : null,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            IconTile(icon: view.icon, color: accent),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(view.title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: unread ? FontWeight.w700 : FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text(view.message),
+                const SizedBox(height: 6),
+                Text(time, style: TextStyle(color: colors.textMuted, fontSize: 12)),
+              ]),
+            ),
+            if (unread)
+              Semantics(
+                label: l10n.unread,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 8, top: 4),
+                  child: Icon(Icons.circle, size: 10, color: colors.mintOnLight),
+                ),
+              ),
+          ]),
+        ),
+      ),
     );
   }
 }

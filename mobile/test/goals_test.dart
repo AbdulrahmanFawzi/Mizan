@@ -79,6 +79,7 @@ void main() {
 
   group('Goals tab', () {
     testWidgets('lists goals with the monthly saving needed', (tester) async {
+      usePhoneScreen(tester);
       await tester.pumpWidget(testApp(const GoalsScreen(), overrides: [goalsProvider.overrideWith((ref) async => [_goal()])]));
       await tester.pumpAndSettle();
 
@@ -87,6 +88,7 @@ void main() {
     });
 
     testWidgets('invites the user to create the first goal', (tester) async {
+      usePhoneScreen(tester);
       await tester.pumpWidget(testApp(const GoalsScreen(), overrides: [goalsProvider.overrideWith((ref) async => <Goal>[])]));
       await tester.pumpAndSettle();
 
@@ -97,6 +99,7 @@ void main() {
 
   group('Goal details', () {
     Future<void> pump(WidgetTester tester, Goal goal) async {
+      usePhoneScreen(tester);
       await tester.pumpWidget(testApp(
         const GoalDetailScreen(goalId: 'g1'),
         overrides: [
@@ -142,6 +145,7 @@ void main() {
 
   group('Goal form', () {
     testWidgets('creating a goal sends name, target, and what is already saved', (tester) async {
+      usePhoneScreen(tester);
       await tester.pumpWidget(testApp(const GoalFormScreen(), overrides: [goalActionsProvider.overrideWithValue(actions)]));
       await tester.pumpAndSettle();
 
@@ -159,6 +163,7 @@ void main() {
     });
 
     testWidgets('editing does not ask for the initial amount again', (tester) async {
+      usePhoneScreen(tester);
       await tester.pumpWidget(testApp(GoalFormScreen(existing: _goal()), overrides: [goalActionsProvider.overrideWithValue(actions)]));
       await tester.pumpAndSettle();
 

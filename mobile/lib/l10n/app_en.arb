@@ -281,5 +281,18 @@
   "budgetShort": "of budget",
   "whereMoneyWent": "Where your money went",
   "seeAll": "See all",
-  "plannedSavingNote": "Planned savings are set aside first"
+  "plannedSavingNote": "Planned savings are set aside first",
+  "spentThisPeriod": "Spent this period",
+  "savedForGoals": "Saved toward your goals",
+  "ofAmount": "of {amount}",
+  "@ofAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "notifNew": "New",
+  "notifEarlier": "Earlier",
+  "goalDetails": "Details"
 }
