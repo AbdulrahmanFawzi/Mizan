@@ -1,0 +1,115 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:mizan/features/transactions/presentation/widgets/transaction_tile.dart';
+import 'package:mizan/main.dart' as app;
+
+// Runs the real app on a simulator against the real local API.
+// Start the API first, then: flutter test integration_test -d <simulator-id>
+// Finds widgets by Key, so it works whatever language the simulator is in.
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  String textOf(WidgetTester tester, Key key) => tester
+      .widgetList<Text>(find.descendant(of: find.byKey(key), matching: find.byType(Text)))
+      .map((t) => t.data)
+      .join(' ');
+
+  testWidgets('register, plan a category, record an expense, reach a goal, log out', (tester) async {
+    await const FlutterSecureStorage().deleteAll();
+    final email = 'it-${DateTime.now().millisecondsSinceEpoch}@example.com';
+
+    app.main();
+    await tester.pumpAndSettle();
+
+    // Register
+    await tester.tap(find.byKey(const Key('goToRegister')));
+    await tester.pumpAndSettle();
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Integration Test');
+    await tester.enterText(fields.at(1), email);
+    await tester.enterText(fields.at(2), 'P@ssw0rd123');
+    await tester.enterText(fields.at(3), '12500');
+    await tester.tap(find.byType(FilledButton));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    // Dashboard from GET /api/dashboard, name from GET /api/me
+    expect(find.byKey(const Key('availableAmount')), findsOneWidget);
+    expect(find.textContaining('Integration Test'), findsOneWidget);
+    expect(textOf(tester, const Key('totalSpent')), contains('0'));
+
+    // Plan a category in the Budget tab: Fuel, 500 SAR a month
+    await tester.tap(find.byKey(const Key('budgetTab')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await tester.tap(find.byKey(const Key('addCategory')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('categoryNameField')), 'Fuel');
+    await tester.enterText(find.byKey(const Key('categoryLimitField')), '500');
+    await tester.tap(find.byKey(const Key('saveCategory')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.text('Fuel'), findsOneWidget);
+
+    // Add an expense (the form picks the first category the user created: Fuel)
+    await tester.tap(find.byKey(const Key('addExpense')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('amountField')), '450');
+    await tester.enterText(find.byKey(const Key('merchantField')), 'XYZ Fuel');
+    await tester.tap(find.byKey(const Key('saveExpense')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    // The Budget tab reloaded: Fuel is at 90% of its limit
+    expect(find.text('90%'), findsOneWidget);
+
+    // So did the dashboard
+    await tester.tap(find.byIcon(Icons.home_outlined));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(textOf(tester, const Key('totalSpent')), contains('450'));
+
+    // The expenses tab lists it
+    await tester.tap(find.byKey(const Key('expensesTab')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byType(TransactionTile), findsOneWidget);
+    expect(find.text('XYZ Fuel'), findsOneWidget);
+
+    // Open it and delete it
+    await tester.tap(find.byType(TransactionTile));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('deleteExpense')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('confirmDelete')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byType(TransactionTile), findsNothing);
+
+    // Create a goal and save toward it until it is reached
+    await tester.tap(find.byKey(const Key('goalsTab')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await tester.tap(find.byKey(const Key('addGoal')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('goalNameField')), 'Trip');
+    await tester.enterText(find.byKey(const Key('goalTargetField')), '1000');
+    await tester.tap(find.byKey(const Key('saveGoal')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    await tester.tap(find.text('Trip'));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byKey(const Key('requiredPerMonth')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('addSaving')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('contributionAmountField')), '1000');
+    await tester.tap(find.byKey(const Key('saveContribution')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byKey(const Key('goalCompletedChip')), findsOneWidget);
+    expect(find.byKey(const Key('addSaving')), findsNothing);
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    // Log out from the dashboard
+    await tester.tap(find.byIcon(Icons.home_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.logout));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('goToRegister')), findsOneWidget);
+  });
+}

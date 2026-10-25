@@ -1,0 +1,223 @@
+{
+  "@@locale": "en",
+  "appName": "Mizan",
+  "tagline": "Know where your salary goes",
+  "login": "Log in",
+  "register": "Create account",
+  "logout": "Log out",
+  "name": "Name",
+  "email": "Email",
+  "password": "Password",
+  "monthlyIncome": "Monthly income (SAR)",
+  "periodStartDay": "Salary day",
+  "periodStartDayHint": "Your budget period starts on this day each month",
+  "noAccount": "Don't have an account? Create one",
+  "haveAccount": "Already have an account? Log in",
+  "fieldRequired": "This field is required",
+  "invalidEmail": "Enter a valid email",
+  "passwordTooShort": "At least {min} characters",
+  "@passwordTooShort": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      }
+    }
+  },
+  "invalidAmount": "Enter an amount greater than zero (up to 2 decimals)",
+  "networkError": "Can't reach the server. Check your connection.",
+  "unexpectedError": "Something went wrong. Please try again.",
+  "sessionExpired": "Your session has ended. Please log in again.",
+  "welcome": "Welcome, {name}",
+  "@welcome": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "language": "العربية",
+  "retry": "Retry",
+  "periodRange": "{start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "daysLeft": "{count, plural, =0{Last day of the period} =1{1 day left} other{{count} days left}}",
+  "@daysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "spent": "Spent",
+  "available": "Available",
+  "budgetUsed": "{percent}% of your budget used",
+  "@budgetUsed": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "noLimitsYet": "Set limits for your categories to track your budget",
+  "topSpending": "Top spending",
+  "noSpendingYet": "No spending yet this period",
+  "goals": "Goals",
+  "noGoals": "No goals yet",
+  "saveEachPeriod": "Save {amount} per month",
+  "@saveEachPeriod": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "goalBy": "by {date}",
+  "@goalBy": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "goalOverdue": "Target date passed",
+  "insights": "Insights",
+  "allOnTrack": "You're on track. No warnings this period.",
+  "notifications": "Notifications",
+  "income": "Income",
+  "tabHome": "Home",
+  "tabExpenses": "Expenses",
+  "addExpense": "Add expense",
+  "editExpense": "Edit expense",
+  "amount": "Amount (SAR)",
+  "category": "Category",
+  "date": "Date",
+  "merchantOptional": "Merchant (optional)",
+  "save": "Save",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "deleteExpenseQuestion": "Delete this expense?",
+  "expenseSaved": "Expense saved",
+  "expenseDeleted": "Expense deleted",
+  "noExpenses": "You haven't recorded any expenses yet",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "categoryOther": "Other",
+  "categorySavings": "Savings",
+  "goalContribution": "Goal saving",
+  "goalCategoryLocked": "Money saved toward a goal stays in Savings",
+  "tabBudget": "Budget",
+  "invalidLimit": "Enter zero or more (up to 2 decimals)",
+  "planned": "Planned",
+  "unallocated": "Not planned yet",
+  "overAllocated": "You planned {amount} more than your income",
+  "@overAllocated": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "addCategory": "Add category",
+  "editCategory": "Edit category",
+  "categoryName": "Category name",
+  "monthlyLimit": "Monthly limit (SAR)",
+  "monthlyLimitHint": "0 means you don't plan to spend on it",
+  "savingsTarget": "Monthly saving target (SAR)",
+  "spentOfLimit": "{spent} of {limit}",
+  "@spentOfLimit": {
+    "placeholders": {
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "remainingAmount": "{amount} left",
+  "@remainingAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "overBy": "Over by {amount}",
+  "@overBy": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "savedOfTarget": "Saved {saved} of {target}",
+  "@savedOfTarget": {
+    "placeholders": {
+      "saved": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "noLimitSet": "No limit set",
+  "deleteCategoryQuestion": "Delete \"{name}\"?",
+  "@deleteCategoryQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteCategoryExplain": "Its expenses will move to \"Other\".",
+  "categorySaved": "Category saved",
+  "categoryDeleted": "Category deleted",
+  "systemCategoryNote": "A built-in category: you can change its limit only.",
+  "tabGoals": "Goals",
+  "addGoal": "New goal",
+  "editGoal": "Edit goal",
+  "goalName": "Goal name",
+  "goalNameHint": "e.g. Travel, Car, Emergency fund",
+  "targetAmount": "Target amount (SAR)",
+  "initialAmount": "Already saved (SAR)",
+  "targetDate": "Target date",
+  "goalSaved": "Goal saved",
+  "goalArchived": "Goal archived",
+  "archiveGoal": "Archive",
+  "archiveGoalQuestion": "Archive \"{name}\"?",
+  "@archiveGoalQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "archiveGoalExplain": "It will be hidden from your goals. The money you saved is not affected.",
+  "addSaving": "Add saving",
+  "addSavingExplain": "This amount counts as spending in your Savings category.",
+  "savingAdded": "Saving added",
+  "goalReached": "🎉 You reached your goal!",
+  "statusCompleted": "Completed",
+  "statusOverdue": "Target date passed",
+  "saved": "Saved",
+  "remainingLabel": "Remaining",
+  "perMonth": "Needed per month",
+  "monthsLeft": "{count, plural, =0{No months left} =1{1 month left} other{{count} months left}}",
+  "@monthsLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extendDateHint": "Move the target date to keep going"
+}
