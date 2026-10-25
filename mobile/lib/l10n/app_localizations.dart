@@ -733,6 +733,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Move the target date to keep going'**
   String get extendDateHint;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotifications;
+
+  /// No description provided for @notifBudgetUsedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget alert'**
+  String get notifBudgetUsedTitle;
+
+  /// No description provided for @notifBudgetUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used {percent}% of your {category} budget.'**
+  String notifBudgetUsed(int percent, String category);
+
+  /// No description provided for @notifBudgetExceededTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget exceeded'**
+  String get notifBudgetExceededTitle;
+
+  /// No description provided for @notifBudgetExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve gone over your {category} budget.'**
+  String notifBudgetExceeded(String category);
+
+  /// No description provided for @notifGoalCompletedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached'**
+  String get notifGoalCompletedTitle;
+
+  /// No description provided for @notifGoalCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Congratulations! You reached your goal: {goal}.'**
+  String notifGoalCompleted(String goal);
+
+  /// No description provided for @notifOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification'**
+  String get notifOther;
+
+  /// No description provided for @unread.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get unread;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get editProfile;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// No description provided for @incomeChangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates your current budget\'s income. Category limits stay the same.'**
+  String get incomeChangeHint;
+
+  /// No description provided for @salaryDayChangeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A new salary day starts with your next budget period.'**
+  String get salaryDayChangeHint;
+
+  /// No description provided for @languageSetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get languageSetting;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get languageSystem;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete your account?'**
+  String get deleteAccountQuestion;
+
+  /// No description provided for @deleteAccountExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes your account and all your data: income, budgets, expenses, goals, and notifications. It can\'t be undone.'**
+  String get deleteAccountExplain;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete permanently'**
+  String get deleteAccountConfirm;
 }
 
 class _AppLocalizationsDelegate

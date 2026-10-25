@@ -376,4 +376,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get extendDateHint => 'Move the target date to keep going';
+
+  @override
+  String get noNotifications => 'No notifications yet';
+
+  @override
+  String get notifBudgetUsedTitle => 'Budget alert';
+
+  @override
+  String notifBudgetUsed(int percent, String category) {
+    return 'You\'ve used $percent% of your $category budget.';
+  }
+
+  @override
+  String get notifBudgetExceededTitle => 'Budget exceeded';
+
+  @override
+  String notifBudgetExceeded(String category) {
+    return 'You\'ve gone over your $category budget.';
+  }
+
+  @override
+  String get notifGoalCompletedTitle => 'Goal reached';
+
+  @override
+  String notifGoalCompleted(String goal) {
+    return '🎉 Congratulations! You reached your goal: $goal.';
+  }
+
+  @override
+  String get notifOther => 'Notification';
+
+  @override
+  String get unread => 'Unread';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get editProfile => 'Edit profile';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get incomeChangeHint =>
+      'Updates your current budget\'s income. Category limits stay the same.';
+
+  @override
+  String get salaryDayChangeHint =>
+      'A new salary day starts with your next budget period.';
+
+  @override
+  String get languageSetting => 'Language';
+
+  @override
+  String get languageSystem => 'Phone';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountQuestion => 'Delete your account?';
+
+  @override
+  String get deleteAccountExplain =>
+      'This permanently deletes your account and all your data: income, budgets, expenses, goals, and notifications. It can\'t be undone.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete permanently';
 }

@@ -36,6 +36,18 @@ class ProfileRepository {
     final response = await apiCall(() => _dio.get<Map<String, dynamic>>('/api/me'));
     return Profile.fromJson(response.data!);
   }
+
+  Future<Profile> update({required String name, required double monthlyIncome, required int periodStartDay}) async {
+    final response = await apiCall(() => _dio.put<Map<String, dynamic>>('/api/me', data: {
+          'name': name,
+          'monthlyIncome': monthlyIncome,
+          'periodStartDay': periodStartDay,
+        }));
+    return Profile.fromJson(response.data!);
+  }
+
+  // UC-06 / BR-U3: the API deletes the user and all their financial data.
+  Future<void> deleteAccount() => apiCall(() => _dio.delete<void>('/api/me'));
 }
 
 final profileRepositoryProvider = Provider<ProfileRepository>(

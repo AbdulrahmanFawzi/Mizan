@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:mizan/features/notifications/presentation/notifications_screen.dart';
 import 'package:mizan/features/transactions/presentation/widgets/transaction_tile.dart';
 import 'package:mizan/main.dart' as app;
 
@@ -16,7 +17,7 @@ void main() {
       .map((t) => t.data)
       .join(' ');
 
-  testWidgets('register, plan a category, record an expense, reach a goal, log out', (tester) async {
+  testWidgets('the whole MVP 0 journey, from sign-up to account deletion', (tester) async {
     await const FlutterSecureStorage().deleteAll();
     final email = 'it-${DateTime.now().millisecondsSinceEpoch}@example.com';
 
@@ -66,6 +67,17 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(textOf(tester, const Key('totalSpent')), contains('450'));
 
+    // Crossing 80% and 90% at once created ONE alert, for the highest threshold (BR-A3)
+    await tester.tap(find.byKey(const Key('notificationsBell')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byType(NotificationTile), findsOneWidget);
+    expect(find.textContaining('90%'), findsOneWidget);
+
+    // Tapping it marks it read and opens the budget, where the user can act on it
+    await tester.tap(find.byType(NotificationTile));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byKey(const Key('addCategory')), findsOneWidget);
+
     // The expenses tab lists it
     await tester.tap(find.byKey(const Key('expensesTab')));
     await tester.pumpAndSettle(const Duration(seconds: 1));
@@ -105,11 +117,31 @@ void main() {
     await tester.pageBack();
     await tester.pumpAndSettle();
 
-    // Log out from the dashboard
+    // Settings: change the income, then delete the account (UC-06)
     await tester.tap(find.byIcon(Icons.home_outlined));
     await tester.pumpAndSettle();
-    await tester.tap(find.byIcon(Icons.logout));
+    await tester.tap(find.byKey(const Key('openSettings')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await tester.tap(find.byKey(const Key('editProfile')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    await tester.enterText(find.byKey(const Key('profileIncomeField')), '15000');
+    await tester.tap(find.byKey(const Key('saveProfile')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.textContaining('15,000'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('deleteAccount')));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('confirmDeleteAccount')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(find.byKey(const Key('goToRegister')), findsOneWidget);
+
+    // The account is really gone: logging in with it fails
+    final loginFields = find.byType(TextFormField);
+    await tester.enterText(loginFields.at(0), email);
+    await tester.enterText(loginFields.at(1), 'P@ssw0rd123');
+    await tester.tap(find.byType(FilledButton));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+    expect(find.byKey(const Key('goToRegister')), findsOneWidget);
+    expect(find.byKey(const Key('availableAmount')), findsNothing);
   });
 }

@@ -376,4 +376,79 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get extendDateHint => 'مدّد التاريخ المستهدف عشان تكمل';
+
+  @override
+  String get noNotifications => 'ما عندك إشعارات للحين';
+
+  @override
+  String get notifBudgetUsedTitle => 'تنبيه الميزانية';
+
+  @override
+  String notifBudgetUsed(int percent, String category) {
+    return 'استخدمت $percent% من ميزانية $category.';
+  }
+
+  @override
+  String get notifBudgetExceededTitle => 'تجاوز الميزانية';
+
+  @override
+  String notifBudgetExceeded(String category) {
+    return 'تجاوزت ميزانية $category.';
+  }
+
+  @override
+  String get notifGoalCompletedTitle => 'هدف مكتمل';
+
+  @override
+  String notifGoalCompleted(String goal) {
+    return '🎉 مبروك! وصلت لهدفك: $goal.';
+  }
+
+  @override
+  String get notifOther => 'إشعار';
+
+  @override
+  String get unread => 'غير مقروء';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف الشخصي';
+
+  @override
+  String get incomeChangeHint =>
+      'يحدّث دخل ميزانيتك الحالية. حدود الفئات تبقى كما هي.';
+
+  @override
+  String get salaryDayChangeHint =>
+      'يوم الراتب الجديد يبدأ من فترة ميزانيتك القادمة.';
+
+  @override
+  String get languageSetting => 'اللغة';
+
+  @override
+  String get languageSystem => 'لغة الجهاز';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get deleteAccountQuestion => 'تحذف حسابك؟';
+
+  @override
+  String get deleteAccountExplain =>
+      'هذا يحذف حسابك وكل بياناتك نهائيًا: الدخل والميزانيات والمصروفات والأهداف والإشعارات. ما تقدر تتراجع عنه.';
+
+  @override
+  String get deleteAccountConfirm => 'احذف نهائيًا';
 }

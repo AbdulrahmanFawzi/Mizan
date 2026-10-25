@@ -11,6 +11,9 @@ import '../../features/goals/data/goal.dart';
 import '../../features/goals/presentation/goal_detail_screen.dart';
 import '../../features/goals/presentation/goal_form_screen.dart';
 import '../../features/goals/presentation/goals_screen.dart';
+import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/settings/edit_profile_screen.dart';
+import '../../features/settings/settings_screen.dart';
 import '../../features/transactions/data/transaction.dart';
 import '../../features/transactions/presentation/expense_form_screen.dart';
 import '../../features/transactions/presentation/transactions_screen.dart';
@@ -26,6 +29,9 @@ abstract final class Routes {
   static const newExpense = '/expenses/new';
   static const goals = '/goals';
   static const newGoal = '/goals/new';
+  static const notifications = '/notifications';
+  static const settings = '/settings';
+  static const editProfile = '/settings/profile';
 
   static String editExpense(String id) => '/expenses/$id';
   static String goal(String id) => '/goals/$id';
@@ -75,6 +81,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/expenses/:id',
         builder: (_, state) => ExpenseFormScreen(existing: state.extra as Transaction?),
+      ),
+      GoRoute(path: Routes.notifications, builder: (_, _) => const NotificationsScreen()),
+      GoRoute(
+        path: Routes.settings,
+        builder: (_, _) => const SettingsScreen(),
+        routes: [GoRoute(path: 'profile', builder: (_, _) => const EditProfileScreen())],
       ),
       GoRoute(path: Routes.newGoal, builder: (_, _) => const GoalFormScreen()),
       GoRoute(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/network/api_exception.dart';
-import '../../../core/widgets/language_button.dart';
+import '../../../core/router/app_router.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/application/auth_controller.dart';
 import '../../categories/data/category.dart';
 import '../../categories/presentation/category_label.dart';
 import '../../profile/data/profile_repository.dart';
@@ -32,19 +32,20 @@ class DashboardScreen extends ConsumerWidget {
         title: Text(l10n.appName),
         actions: [
           IconButton(
+            key: const Key('notificationsBell'),
             tooltip: l10n.notifications,
-            onPressed: null, // The notifications screen comes in a later step.
+            onPressed: () => context.push(Routes.notifications),
             icon: Badge.count(
               count: dashboard.value?.unreadNotifications ?? 0,
               isLabelVisible: (dashboard.value?.unreadNotifications ?? 0) > 0,
               child: const Icon(Icons.notifications_outlined),
             ),
           ),
-          const LanguageButton(),
           IconButton(
-            tooltip: l10n.logout,
-            icon: const Icon(Icons.logout),
-            onPressed: () => ref.read(authControllerProvider.notifier).logout(),
+            key: const Key('openSettings'),
+            tooltip: l10n.settings,
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => context.push(Routes.settings),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/storage/token_storage.dart';
+import '../../profile/data/profile_repository.dart';
 import '../data/auth_repository.dart';
 
 enum AuthStatus { authenticated, unauthenticated }
@@ -26,6 +27,14 @@ class AuthController extends AsyncNotifier<AuthStatus> {
 
   Future<void> logout() async {
     await ref.read(authRepositoryProvider).logout();
+    state = const AsyncData(AuthStatus.unauthenticated);
+  }
+
+  // Lives here (not in a profile class) because it ends the session, like logout.
+  // Tokens are cleared only after the server confirmed the delete.
+  Future<void> deleteAccount() async {
+    await ref.read(profileRepositoryProvider).deleteAccount();
+    await ref.read(tokenStorageProvider).clear();
     state = const AsyncData(AuthStatus.unauthenticated);
   }
 

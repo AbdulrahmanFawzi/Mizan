@@ -219,5 +219,51 @@
       }
     }
   },
-  "extendDateHint": "Move the target date to keep going"
+  "extendDateHint": "Move the target date to keep going",
+  "noNotifications": "No notifications yet",
+  "notifBudgetUsedTitle": "Budget alert",
+  "notifBudgetUsed": "You've used {percent}% of your {category} budget.",
+  "@notifBudgetUsed": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "notifBudgetExceededTitle": "Budget exceeded",
+  "notifBudgetExceeded": "You've gone over your {category} budget.",
+  "@notifBudgetExceeded": {
+    "placeholders": {
+      "category": {
+        "type": "String"
+      }
+    }
+  },
+  "notifGoalCompletedTitle": "Goal reached",
+  "notifGoalCompleted": "🎉 Congratulations! You reached your goal: {goal}.",
+  "@notifGoalCompleted": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "notifOther": "Notification",
+  "unread": "Unread",
+  "settings": "Settings",
+  "profile": "Profile",
+  "editProfile": "Edit profile",
+  "profileSaved": "Profile saved",
+  "incomeChangeHint": "Updates your current budget's income. Category limits stay the same.",
+  "salaryDayChangeHint": "A new salary day starts with your next budget period.",
+  "languageSetting": "Language",
+  "languageSystem": "Phone",
+  "account": "Account",
+  "deleteAccount": "Delete account",
+  "deleteAccountQuestion": "Delete your account?",
+  "deleteAccountExplain": "This permanently deletes your account and all your data: income, budgets, expenses, goals, and notifications. It can't be undone.",
+  "deleteAccountConfirm": "Delete permanently"
 }
