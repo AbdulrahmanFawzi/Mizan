@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:lean_sdk_flutter/lean_sdk_flutter.dart';
 
 import '../../../core/network/api_exception.dart';
+import '../../../core/router/app_router.dart';
 import '../../../core/theme/mizan_colors.dart';
 import '../../../core/widgets/ui.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../profile/data/profile_repository.dart';
 import '../application/banking_actions.dart';
 import '../data/banking.dart';
 
@@ -56,6 +58,28 @@ class _BankLinkScreenState extends ConsumerState<BankLinkScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
+    // BR-U5: the API refuses a link session until the email is verified, so ask for it first.
+    final profile = ref.watch(profileProvider);
+    if (profile.value?.emailVerified != true) {
+      return Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: profile.hasValue
+              ? EmptyState(
+                  icon: Icons.mark_email_unread_rounded,
+                  message: l10n.verifyBeforeLink,
+                  action: FilledButton(
+                    key: const Key('verifyBeforeLink'),
+                    onPressed: () => context.push(Routes.verifyEmail),
+                    child: Text(l10n.verifyEmail),
+                  ),
+                )
+              : const CircularProgressIndicator(),
+        ),
+      );
+    }
+
     final session = ref.watch(_linkSessionProvider);
 
     if (_finishing) {

@@ -92,6 +92,11 @@ public sealed class BankingJobRunner(IServiceScopeFactory scopes, Clock clock, I
                         var payload = JsonSerializer.Deserialize<DeleteCustomerMessage>(message.Payload, JsonSerializerOptions.Web)!;
                         await provider.DeleteCustomerAsync(payload.ProviderCustomerId, cancellationToken);
                         break;
+                    case OutboxTypes.SendEmail:
+                        var email = JsonSerializer.Deserialize<EmailMessage>(message.Payload, JsonSerializerOptions.Web)!;
+                        await scope.ServiceProvider.GetRequiredService<IEmailSender>().SendAsync(email, cancellationToken);
+                        message.Payload = "{}";     // the code inside isn't kept once it's sent
+                        break;
                     default:
                         logger.LogWarning("Unknown outbox message type {Type}", message.Type);
                         break;

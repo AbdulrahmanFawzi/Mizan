@@ -754,4 +754,50 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accountIncluded => 'The account now counts in your budget';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get code => 'Code';
+
+  @override
+  String get invalidCode => 'Enter the 6-digit code';
+
+  @override
+  String get verifyEmail => 'Confirm your email';
+
+  @override
+  String verifyEmailExplain(String email) {
+    return 'We sent a 6-digit code to $email. Enter it here. If it hasn\'t arrived, check spam or send a new one.';
+  }
+
+  @override
+  String get sendCode => 'Send code';
+
+  @override
+  String get resendCode => 'Send a new code';
+
+  @override
+  String get codeSent => 'A new code is on its way';
+
+  @override
+  String get forgotPassword => 'Forgot your password?';
+
+  @override
+  String get resetPassword => 'Reset password';
+
+  @override
+  String get resetCodeSent =>
+      'If this email has an account, a 6-digit code is on its way. It works for 15 minutes.';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get backToLogin => 'Back to login';
+
+  @override
+  String get verifyBeforeLink =>
+      'Confirm your email first. It protects your account before linking a bank.';
 }

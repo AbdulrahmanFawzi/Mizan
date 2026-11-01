@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddSingleton<Clock>();
 
         services.AddScoped<AuthService>();
+        services.AddScoped<EmailCodes>();
         services.AddScoped<ProfileService>();
         services.AddScoped<CategoryService>();
         services.AddScoped<BudgetService>();

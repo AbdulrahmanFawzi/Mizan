@@ -754,4 +754,50 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountIncluded => 'صار الحساب يدخل ميزانيتك';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get code => 'الرمز';
+
+  @override
+  String get invalidCode => 'اكتب الرمز المكوّن من 6 أرقام';
+
+  @override
+  String get verifyEmail => 'تأكيد الإيميل';
+
+  @override
+  String verifyEmailExplain(String email) {
+    return 'أرسلنا رمز من 6 أرقام إلى $email. اكتبه هنا. لو ما وصل، شيّك على البريد المزعج أو اطلب رمز جديد.';
+  }
+
+  @override
+  String get sendCode => 'أرسل الرمز';
+
+  @override
+  String get resendCode => 'أرسل رمز جديد';
+
+  @override
+  String get codeSent => 'أرسلنا رمز جديد';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get resetPassword => 'تغيير كلمة المرور';
+
+  @override
+  String get resetCodeSent =>
+      'إذا هذا الإيميل له حساب، بيوصلك رمز من 6 أرقام. يشتغل لمدة 15 دقيقة.';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get backToLogin => 'رجوع لتسجيل الدخول';
+
+  @override
+  String get verifyBeforeLink =>
+      'أكّد إيميلك أول. هذا يحمي حسابك قبل ربط البنك.';
 }

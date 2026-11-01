@@ -1381,6 +1381,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The account now counts in your budget'**
   String get accountIncluded;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @code.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get code;
+
+  /// No description provided for @invalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit code'**
+  String get invalidCode;
+
+  /// No description provided for @verifyEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email'**
+  String get verifyEmail;
+
+  /// No description provided for @verifyEmailExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {email}. Enter it here. If it hasn\'t arrived, check spam or send a new one.'**
+  String verifyEmailExplain(String email);
+
+  /// No description provided for @sendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send code'**
+  String get sendCode;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a new code'**
+  String get resendCode;
+
+  /// No description provided for @codeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'A new code is on its way'**
+  String get codeSent;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get forgotPassword;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get resetPassword;
+
+  /// No description provided for @resetCodeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'If this email has an account, a 6-digit code is on its way. It works for 15 minutes.'**
+  String get resetCodeSent;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPassword;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get backToLogin;
+
+  /// No description provided for @verifyBeforeLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email first. It protects your account before linking a bank.'**
+  String get verifyBeforeLink;
 }
 
 class _AppLocalizationsDelegate

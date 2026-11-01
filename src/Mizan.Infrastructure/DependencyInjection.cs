@@ -5,6 +5,7 @@ using Mizan.Application.Abstractions;
 using Mizan.Infrastructure.Background;
 using Mizan.Infrastructure.Banking;
 using Mizan.Infrastructure.Banking.Lean;
+using Mizan.Infrastructure.Emailing;
 using Mizan.Infrastructure.Messaging;
 using Mizan.Infrastructure.Persistence;
 using Mizan.Infrastructure.Persistence.Repositories;
@@ -33,6 +34,8 @@ public static class DependencyInjection
         services.AddScoped<IGoalRepository, GoalRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IEmailCodeRepository, EmailCodeRepository>();
+        services.AddSingleton<IEmailSender, LogEmailSender>();
 
         services.AddOptions<JwtOptions>()
             .Bind(configuration.GetSection(JwtOptions.SectionName))

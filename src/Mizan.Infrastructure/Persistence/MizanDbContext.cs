@@ -25,6 +25,7 @@ public sealed class MizanDbContext(DbContextOptions<MizanDbContext> options, Iba
     public DbSet<Goal> Goals => Set<Goal>();
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<EmailCode> EmailCodes => Set<EmailCode>();
     public DbSet<BankingCustomer> BankingCustomers => Set<BankingCustomer>();
     public DbSet<BankConnection> BankConnections => Set<BankConnection>();
     public DbSet<MerchantRule> MerchantRules => Set<MerchantRule>();

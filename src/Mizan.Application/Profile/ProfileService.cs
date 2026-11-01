@@ -12,7 +12,8 @@ public sealed record ProfileDto(
     string Email,
     string Currency,
     MoneyDto MonthlyIncome,
-    int PeriodStartDay);
+    int PeriodStartDay,
+    bool EmailVerified);
 
 public sealed record UpdateProfileCommand(string Name, decimal MonthlyIncome, int PeriodStartDay);
 
@@ -66,5 +67,6 @@ public sealed class ProfileService(
         user.Email.Value,
         user.Currency.Code,
         MoneyDto.From(user.MonthlyIncome),
-        user.PeriodStartDay.Value);
+        user.PeriodStartDay.Value,
+        user.IsEmailVerified);
 }

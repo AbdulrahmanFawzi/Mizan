@@ -23,6 +23,53 @@ namespace Mizan.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Mizan.Application.Auth.EmailCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
+
+                    b.Property<string>("CodeHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("code_hash");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("Purpose")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("purpose");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("used_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_email_codes");
+
+                    b.HasIndex("UserId", "Purpose", "CreatedAt")
+                        .HasDatabaseName("ix_email_codes_user_id_purpose_created_at");
+
+                    b.ToTable("email_codes", (string)null);
+                });
+
             modelBuilder.Entity("Mizan.Application.Auth.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -757,6 +804,10 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("email");
 
+                    b.Property<DateTimeOffset?>("EmailVerifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("email_verified_at");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -901,6 +952,16 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_outbox_messages_processed_at_next_attempt_at");
 
                     b.ToTable("outbox_messages", (string)null);
+                });
+
+            modelBuilder.Entity("Mizan.Application.Auth.EmailCode", b =>
+                {
+                    b.HasOne("Mizan.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_email_codes_users_user_id");
                 });
 
             modelBuilder.Entity("Mizan.Application.Auth.RefreshToken", b =>

@@ -115,6 +115,16 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             clipBehavior: Clip.antiAlias,
             child: Column(children: [
+              if (profile != null && !profile.emailVerified) ...[
+                _SettingsRow(
+                  key: const Key('openVerifyEmail'),
+                  icon: Icons.mark_email_unread_rounded,
+                  color: colors.warning,
+                  label: l10n.verifyEmail,
+                  onTap: () => context.push(Routes.verifyEmail),
+                ),
+                const Divider(indent: 68),
+              ],
               _SettingsRow(
                 key: const Key('logout'),
                 icon: Icons.logout_rounded,

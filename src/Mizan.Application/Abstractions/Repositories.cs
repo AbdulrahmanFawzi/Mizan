@@ -71,3 +71,9 @@ public interface IRefreshTokenRepository
     Task<IReadOnlyList<RefreshToken>> ListActiveAsync(Guid userId, DateTimeOffset now, CancellationToken cancellationToken);
     void Add(RefreshToken refreshToken);
 }
+
+public interface IEmailCodeRepository
+{
+    Task<EmailCode?> GetLatestAsync(Guid userId, EmailCodePurpose purpose, CancellationToken cancellationToken);
+    void Add(EmailCode code);
+}

@@ -445,5 +445,26 @@
     }
   },
   "includeAccount": "Include this account in my budget",
-  "accountIncluded": "The account now counts in your budget"
+  "accountIncluded": "The account now counts in your budget",
+  "confirm": "Confirm",
+  "code": "Code",
+  "invalidCode": "Enter the 6-digit code",
+  "verifyEmail": "Confirm your email",
+  "verifyEmailExplain": "We sent a 6-digit code to {email}. Enter it here. If it hasn't arrived, check spam or send a new one.",
+  "@verifyEmailExplain": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendCode": "Send code",
+  "resendCode": "Send a new code",
+  "codeSent": "A new code is on its way",
+  "forgotPassword": "Forgot your password?",
+  "resetPassword": "Reset password",
+  "resetCodeSent": "If this email has an account, a 6-digit code is on its way. It works for 15 minutes.",
+  "newPassword": "New password",
+  "backToLogin": "Back to login",
+  "verifyBeforeLink": "Confirm your email first. It protects your account before linking a bank."
 }

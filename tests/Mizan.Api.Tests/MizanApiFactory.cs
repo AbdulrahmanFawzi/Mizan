@@ -18,6 +18,8 @@ public sealed class MizanApiFactory : WebApplicationFactory<Program>, IAsyncLife
 
     public FakeBankingProvider Bank { get; } = new();
 
+    public FakeEmailSender Emails { get; } = new();
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
@@ -30,7 +32,11 @@ public sealed class MizanApiFactory : WebApplicationFactory<Program>, IAsyncLife
         builder.UseSetting("BackgroundJobs:Enabled", "false");
         builder.UseSetting("Lean:WebhookSecret", WebhookSecret);
 
-        builder.ConfigureTestServices(services => services.AddSingleton<IBankingProvider>(Bank));
+        builder.ConfigureTestServices(services =>
+        {
+            services.AddSingleton<IBankingProvider>(Bank);
+            services.AddSingleton<IEmailSender>(Emails);
+        });
     }
 
     public async Task InitializeAsync()

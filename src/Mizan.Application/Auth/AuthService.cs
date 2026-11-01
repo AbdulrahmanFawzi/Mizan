@@ -11,6 +11,7 @@ public sealed class AuthService(
     IRefreshTokenRepository refreshTokens,
     IPasswordHasher passwordHasher,
     IAccessTokenIssuer accessTokenIssuer,
+    EmailCodes emailCodes,
     IUnitOfWork unitOfWork,
     Clock clock)
 {
@@ -20,12 +21,7 @@ public sealed class AuthService(
 
     public async Task<AuthTokens> RegisterAsync(RegisterCommand command, CancellationToken cancellationToken)
     {
-        if (command.Password.Length is < MinPasswordLength or > MaxPasswordLength)
-        {
-            throw new ValidationException(
-                $"Password must be between {MinPasswordLength} and {MaxPasswordLength} characters.");
-        }
-
+        EnsureValidPassword(command.Password);
         var email = Email.From(command.Email);
 
         // BR-U1 (the database unique index is the final guard against two simultaneous sign-ups).
@@ -43,6 +39,7 @@ public sealed class AuthService(
             clock.Now);
 
         users.Add(user);
+        await emailCodes.SendAsync(user, EmailCodePurpose.VerifyEmail, cancellationToken);
         var tokens = IssueTokens(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return tokens;
@@ -122,6 +119,97 @@ public sealed class AuthService(
 
         stored.Revoke(clock.Now);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    // UC-05: always "done", so the answer doesn't reveal whether an account exists.
+    public async Task ForgotPasswordAsync(ForgotPasswordCommand command, CancellationToken cancellationToken)
+    {
+        if (await FindByEmailAsync(command.Email, cancellationToken) is not { } user)
+        {
+            return;
+        }
+
+        await emailCodes.SendAsync(user, EmailCodePurpose.ResetPassword, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    // UC-05: the code proves the email is theirs, so it also verifies it. Every other session is ended,
+    // in case someone else had the old password.
+    public async Task<AuthTokens> ResetPasswordAsync(ResetPasswordCommand command, CancellationToken cancellationToken)
+    {
+        EnsureValidPassword(command.NewPassword);
+        var user = await FindByEmailAsync(command.Email, cancellationToken);
+
+        if (user is null || !await emailCodes.TryUseAsync(user, EmailCodePurpose.ResetPassword, command.Code, cancellationToken))
+        {
+            await unitOfWork.SaveChangesAsync(cancellationToken);   // keeps the failed attempt
+            throw new ValidationException(WrongCode);
+        }
+
+        user.ChangePasswordHash(passwordHasher.Hash(command.NewPassword));
+        user.VerifyEmail(clock.Now);
+        foreach (var token in await refreshTokens.ListActiveAsync(user.Id, clock.Now, cancellationToken))
+        {
+            token.Revoke(clock.Now);
+        }
+
+        var tokens = IssueTokens(user);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return tokens;
+    }
+
+    // UC-07: verify the email (needed before linking a bank, BR-U5)
+    public async Task SendVerificationAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await users.GetAsync(userId, cancellationToken) ?? throw new NotFoundException("User");
+        if (user.IsEmailVerified)
+        {
+            return;
+        }
+
+        await emailCodes.SendAsync(user, EmailCodePurpose.VerifyEmail, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task VerifyEmailAsync(Guid userId, VerifyEmailCommand command, CancellationToken cancellationToken)
+    {
+        var user = await users.GetAsync(userId, cancellationToken) ?? throw new NotFoundException("User");
+        if (user.IsEmailVerified)
+        {
+            return;
+        }
+
+        if (!await emailCodes.TryUseAsync(user, EmailCodePurpose.VerifyEmail, command.Code, cancellationToken))
+        {
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            throw new ValidationException(WrongCode);
+        }
+
+        user.VerifyEmail(clock.Now);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    private const string WrongCode = "The code is wrong or has expired.";
+
+    private static void EnsureValidPassword(string password)
+    {
+        if (password.Length is < MinPasswordLength or > MaxPasswordLength)
+        {
+            throw new ValidationException(
+                $"Password must be between {MinPasswordLength} and {MaxPasswordLength} characters.");
+        }
+    }
+
+    private async Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await users.GetByEmailAsync(Email.From(email), cancellationToken);
+        }
+        catch (DomainException)
+        {
+            return null;
+        }
     }
 
     private AuthTokens IssueTokens(User user)

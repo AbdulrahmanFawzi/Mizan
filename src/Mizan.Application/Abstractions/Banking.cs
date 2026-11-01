@@ -149,6 +149,7 @@ public interface IOutbox
 public static class OutboxTypes
 {
     public const string DeleteCustomer = "banking.delete-customer";
+    public const string SendEmail = "email.send";       // payload: EmailMessage
 }
 
 public sealed record DeleteCustomerMessage(string ProviderCustomerId);

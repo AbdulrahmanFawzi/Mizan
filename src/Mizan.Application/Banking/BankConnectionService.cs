@@ -68,6 +68,12 @@ public sealed class BankConnectionService(
     // UC-70: everything the app needs to open the provider's link screen.
     public async Task<LinkSessionDto> CreateLinkSessionAsync(Guid userId, CancellationToken cancellationToken)
     {
+        var user = await users.GetAsync(userId, cancellationToken) ?? throw new NotFoundException("User");
+        if (!user.IsEmailVerified)
+        {
+            throw new EmailNotVerifiedException();
+        }
+
         var customer = await GetOrCreateCustomerAsync(userId, cancellationToken);
         var session = await provider.CreateLinkSessionAsync(customer.ProviderCustomerId, cancellationToken);
 

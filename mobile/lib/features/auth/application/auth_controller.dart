@@ -25,6 +25,11 @@ class AuthController extends AsyncNotifier<AuthStatus> {
     state = const AsyncData(AuthStatus.authenticated);
   }
 
+  Future<void> resetPassword({required String email, required String code, required String newPassword}) async {
+    await ref.read(authRepositoryProvider).resetPassword(email: email, code: code, newPassword: newPassword);
+    state = const AsyncData(AuthStatus.authenticated);
+  }
+
   Future<void> logout() async {
     await ref.read(authRepositoryProvider).logout();
     state = const AsyncData(AuthStatus.unauthenticated);

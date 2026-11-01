@@ -7,6 +7,7 @@ import 'package:mizan/features/banking/presentation/bank_link_screen.dart';
 import 'package:mizan/features/banking/presentation/bank_transaction_screen.dart';
 import 'package:mizan/features/banking/presentation/review_screen.dart';
 import 'package:mizan/features/categories/data/category.dart';
+import 'package:mizan/features/profile/data/profile_repository.dart';
 import 'package:mizan/features/transactions/data/transaction.dart';
 import 'package:mizan/features/transactions/presentation/widgets/transaction_tile.dart';
 
@@ -348,7 +349,7 @@ void main() {
           child: Text(session.customerId),
         ),
       ),
-      overrides: [bankingActionsProvider.overrideWithValue(actions)],
+      overrides: [bankingActionsProvider.overrideWithValue(actions), profileProvider.overrideWith((ref) async => _profile())],
     ));
     await tester.pumpAndSettle();
 
@@ -358,4 +359,32 @@ void main() {
 
     expect(actions.calls, ['finishLinking']);
   });
+
+  testWidgets('linking asks to confirm the email first (BR-U5)', (tester) async {
+    usePhoneScreen(tester);
+    var sessions = 0;
+    await tester.pumpWidget(testApp(
+      BankLinkScreen(linkerBuilder: (session, onDone) {
+        sessions++;
+        return const SizedBox();
+      }),
+      overrides: [
+        bankingActionsProvider.overrideWithValue(actions),
+        profileProvider.overrideWith((ref) async => _profile(emailVerified: false)),
+      ],
+    ));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('verifyBeforeLink')), findsOneWidget);
+    expect(sessions, 0);
+  });
 }
+
+Profile _profile({bool emailVerified = true}) => Profile(
+      name: 'A',
+      email: 'a@example.com',
+      currency: 'SAR',
+      monthlyIncome: 10000,
+      periodStartDay: 1,
+      emailVerified: emailVerified,
+    );

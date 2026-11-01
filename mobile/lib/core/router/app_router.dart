@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/application/auth_controller.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
 import '../../features/banking/presentation/bank_connections_screen.dart';
@@ -16,6 +17,7 @@ import '../../features/goals/presentation/goal_detail_screen.dart';
 import '../../features/goals/presentation/goal_form_screen.dart';
 import '../../features/goals/presentation/goals_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/profile/presentation/verify_email_screen.dart';
 import '../../features/settings/edit_profile_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/transactions/data/transaction.dart';
@@ -27,6 +29,8 @@ abstract final class Routes {
   static const splash = '/splash';
   static const login = '/login';
   static const register = '/register';
+  static const forgotPassword = '/forgot-password';
+  static const verifyEmail = '/settings/verify-email';
   static const home = '/';
   static const budget = '/budget';
   static const expenses = '/expenses';
@@ -61,7 +65,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (!auth.hasValue) return Routes.splash;
 
       final loggedIn = auth.value == AuthStatus.authenticated;
-      final onAuthPage = location == Routes.login || location == Routes.register;
+      final onAuthPage = location == Routes.login || location == Routes.register || location == Routes.forgotPassword;
 
       if (!loggedIn) return onAuthPage ? null : Routes.login;
       if (onAuthPage || location == Routes.splash) return Routes.home;
@@ -71,6 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.splash, builder: (_, _) => const Scaffold(body: Center(child: CircularProgressIndicator()))),
       GoRoute(path: Routes.login, builder: (_, _) => const LoginScreen()),
       GoRoute(path: Routes.register, builder: (_, _) => const RegisterScreen()),
+      GoRoute(path: Routes.forgotPassword, builder: (_, _) => const ForgotPasswordScreen()),
 
       // The four tabs.
       StatefulShellRoute.indexedStack(
@@ -100,6 +105,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const SettingsScreen(),
         routes: [
           GoRoute(path: 'profile', builder: (_, _) => const EditProfileScreen()),
+          GoRoute(path: 'verify-email', builder: (_, _) => const VerifyEmailScreen()),
           GoRoute(
             path: 'banks',
             builder: (_, _) => const BankConnectionsScreen(),

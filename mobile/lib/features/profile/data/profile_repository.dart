@@ -10,6 +10,7 @@ class Profile {
     required this.currency,
     required this.monthlyIncome,
     required this.periodStartDay,
+    this.emailVerified = true,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
@@ -18,6 +19,7 @@ class Profile {
         currency: json['currency'] as String,
         monthlyIncome: (json['monthlyIncome']['amount'] as num).toDouble(),
         periodStartDay: json['periodStartDay'] as int,
+        emailVerified: json['emailVerified'] as bool? ?? false,
       );
 
   final String name;
@@ -25,6 +27,9 @@ class Profile {
   final String currency;
   final double monthlyIncome;
   final int periodStartDay;
+
+  // BR-U5: needed before linking a bank.
+  final bool emailVerified;
 }
 
 class ProfileRepository {
@@ -45,6 +50,11 @@ class ProfileRepository {
         }));
     return Profile.fromJson(response.data!);
   }
+
+  // UC-07: the API ignores a second request within a minute.
+  Future<void> sendVerificationCode() => apiCall(() => _dio.post<void>('/api/me/email/send-code'));
+
+  Future<void> verifyEmail(String code) => apiCall(() => _dio.post<void>('/api/me/email/verify', data: {'code': code}));
 
   // UC-06 / BR-U3: the API deletes the user and all their financial data.
   Future<void> deleteAccount() => apiCall(() => _dio.delete<void>('/api/me'));

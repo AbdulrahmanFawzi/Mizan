@@ -32,6 +32,7 @@ public sealed class BankingJourneyTests(MizanApiFactory factory)
     private static async Task<(ApiClient Api, string CustomerId)> StartAsync(MizanApiFactory factory)
     {
         var api = await ApiClient.RegisterAsync(factory);
+        await api.VerifyEmailAsync(factory);
         var link = await api.PostAsync<LinkSessionDto>("/api/bank-connections/link", new { });
         return (api, link.CustomerId);
     }

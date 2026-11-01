@@ -48,6 +48,12 @@ class FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<void> deleteAccount() async => deleted = true;
+
+  @override
+  Future<void> sendVerificationCode() async {}
+
+  @override
+  Future<void> verifyEmail(String code) async {}
 }
 
 class FakeProfileActions implements ProfileActions {
