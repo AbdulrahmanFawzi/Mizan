@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/storage/token_storage.dart';
+import '../../onboarding/onboarding_controller.dart';
 import '../../profile/data/profile_repository.dart';
 import '../data/auth_repository.dart';
 
@@ -20,8 +21,10 @@ class AuthController extends AsyncNotifier<AuthStatus> {
     state = const AsyncData(AuthStatus.authenticated);
   }
 
+  // A new account starts with the guided setup (set before "authenticated", so the router goes there first).
   Future<void> register(RegisterRequest request) async {
     await ref.read(authRepositoryProvider).register(request);
+    await ref.read(onboardingProvider.notifier).start();
     state = const AsyncData(AuthStatus.authenticated);
   }
 
@@ -32,6 +35,7 @@ class AuthController extends AsyncNotifier<AuthStatus> {
 
   Future<void> logout() async {
     await ref.read(authRepositoryProvider).logout();
+    await ref.read(onboardingProvider.notifier).finish();
     state = const AsyncData(AuthStatus.unauthenticated);
   }
 
@@ -40,6 +44,7 @@ class AuthController extends AsyncNotifier<AuthStatus> {
   Future<void> deleteAccount() async {
     await ref.read(profileRepositoryProvider).deleteAccount();
     await ref.read(tokenStorageProvider).clear();
+    await ref.read(onboardingProvider.notifier).finish();
     state = const AsyncData(AuthStatus.unauthenticated);
   }
 

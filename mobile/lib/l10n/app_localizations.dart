@@ -1471,6 +1471,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export my data'**
   String get exportData;
+
+  /// No description provided for @stepOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {step} of {total}'**
+  String stepOf(int step, int total);
+
+  /// No description provided for @skipSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skipSetup;
+
+  /// No description provided for @later.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get later;
+
+  /// No description provided for @finishSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now, take me to the app'**
+  String get finishSetup;
+
+  /// No description provided for @setupBudgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan your month'**
+  String get setupBudgetTitle;
+
+  /// No description provided for @setupBudgetExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Here are common categories with limits suggested from your income. Untick what you don\'t need and change any amount. You can edit all of this later.'**
+  String get setupBudgetExplain;
+
+  /// No description provided for @setupBudgetTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned: {planned} of your {income} income'**
+  String setupBudgetTotal(String planned, String income);
+
+  /// No description provided for @createBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my budget'**
+  String get createBudget;
 }
 
 class _AppLocalizationsDelegate

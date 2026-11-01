@@ -12,14 +12,30 @@ import '../data/profile_repository.dart';
 
 // UC-07 (BR-U5): the code was sent when the user signed up; they can ask for a new one here.
 // Pops with true once the email is verified.
-class VerifyEmailScreen extends ConsumerStatefulWidget {
+class VerifyEmailScreen extends StatelessWidget {
   const VerifyEmailScreen({super.key});
 
   @override
-  ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: Text(AppLocalizations.of(context).verifyEmail)),
+        body: ListView(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          children: [VerifyEmailForm(onVerified: () => context.pop(true))],
+        ),
+      );
 }
 
-class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
+// Also the first step of the guided setup.
+class VerifyEmailForm extends ConsumerStatefulWidget {
+  const VerifyEmailForm({super.key, required this.onVerified});
+
+  final VoidCallback onVerified;
+
+  @override
+  ConsumerState<VerifyEmailForm> createState() => _VerifyEmailFormState();
+}
+
+class _VerifyEmailFormState extends ConsumerState<VerifyEmailForm> {
   final _formKey = GlobalKey<FormState>();
   final _code = TextEditingController();
   bool _busy = false;
@@ -41,7 +57,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     try {
       await ref.read(profileRepositoryProvider).verifyEmail(_code.text.trim());
       ref.invalidate(profileProvider);
-      if (mounted) context.pop(true);
+      widget.onVerified();
     } catch (error) {
       if (mounted) setState(() => _error = errorMessage(error, l10n));
     } finally {
@@ -65,24 +81,20 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
     final l10n = AppLocalizations.of(context);
     final email = ref.watch(profileProvider).value?.email ?? '';
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.verifyEmail)),
-      body: ListView(padding: const EdgeInsets.fromLTRB(24, 16, 24, 32), children: [
-        IconTile(icon: Icons.mark_email_read_rounded, color: context.mizan.mintOnLight, size: 52),
-        const SizedBox(height: 16),
-        Text(l10n.verifyEmailExplain(email), style: const TextStyle(height: 1.5)),
-        const SizedBox(height: 24),
-        Form(key: _formKey, child: CodeField(controller: _code, onSubmitted: _verify)),
-        const SizedBox(height: 16),
-        FormErrorText(_error),
-        FilledButton(
-          key: const Key('verifyEmail'),
-          onPressed: _busy ? null : _verify,
-          child: Text(l10n.confirm),
-        ),
-        const SizedBox(height: 8),
-        TextButton(key: const Key('resendCode'), onPressed: _resend, child: Text(l10n.resendCode)),
-      ]),
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: IconTile(icon: Icons.mark_email_read_rounded, color: context.mizan.mintOnLight, size: 52),
+      ),
+      const SizedBox(height: 16),
+      Text(l10n.verifyEmailExplain(email), style: const TextStyle(height: 1.5)),
+      const SizedBox(height: 24),
+      Form(key: _formKey, child: CodeField(controller: _code, onSubmitted: _verify)),
+      const SizedBox(height: 16),
+      FormErrorText(_error),
+      FilledButton(key: const Key('verifyEmail'), onPressed: _busy ? null : _verify, child: Text(l10n.confirm)),
+      const SizedBox(height: 8),
+      TextButton(key: const Key('resendCode'), onPressed: _resend, child: Text(l10n.resendCode)),
+    ]);
   }
 }

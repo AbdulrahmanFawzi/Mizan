@@ -228,5 +228,13 @@
   "newPassword": "كلمة المرور الجديدة",
   "backToLogin": "رجوع لتسجيل الدخول",
   "verifyBeforeLink": "أكّد إيميلك أول. هذا يحمي حسابك قبل ربط البنك.",
-  "exportData": "تصدير بياناتي"
+  "exportData": "تصدير بياناتي",
+  "stepOf": "الخطوة {step} من {total}",
+  "skipSetup": "تخطي",
+  "later": "لاحقًا",
+  "finishSetup": "مو الحين، ودّني للتطبيق",
+  "setupBudgetTitle": "خطّط لشهرك",
+  "setupBudgetExplain": "هذي فئات شائعة وحدود مقترحة من دخلك. شيل اللي ما تحتاجه وعدّل أي مبلغ. تقدر تغيّر كل هذا بعدين.",
+  "setupBudgetTotal": "المخطط: {planned} من دخلك {income}",
+  "createBudget": "أنشئ ميزانيتي"
 }

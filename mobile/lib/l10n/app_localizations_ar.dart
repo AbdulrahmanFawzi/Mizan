@@ -803,4 +803,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exportData => 'تصدير بياناتي';
+
+  @override
+  String stepOf(int step, int total) {
+    return 'الخطوة $step من $total';
+  }
+
+  @override
+  String get skipSetup => 'تخطي';
+
+  @override
+  String get later => 'لاحقًا';
+
+  @override
+  String get finishSetup => 'مو الحين، ودّني للتطبيق';
+
+  @override
+  String get setupBudgetTitle => 'خطّط لشهرك';
+
+  @override
+  String get setupBudgetExplain =>
+      'هذي فئات شائعة وحدود مقترحة من دخلك. شيل اللي ما تحتاجه وعدّل أي مبلغ. تقدر تغيّر كل هذا بعدين.';
+
+  @override
+  String setupBudgetTotal(String planned, String income) {
+    return 'المخطط: $planned من دخلك $income';
+  }
+
+  @override
+  String get createBudget => 'أنشئ ميزانيتي';
 }

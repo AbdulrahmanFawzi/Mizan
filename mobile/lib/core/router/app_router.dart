@@ -17,6 +17,8 @@ import '../../features/goals/presentation/goal_detail_screen.dart';
 import '../../features/goals/presentation/goal_form_screen.dart';
 import '../../features/goals/presentation/goals_screen.dart';
 import '../../features/notifications/presentation/notifications_screen.dart';
+import '../../features/onboarding/welcome_screen.dart';
+import '../../features/onboarding/onboarding_controller.dart';
 import '../../features/profile/presentation/verify_email_screen.dart';
 import '../../features/settings/edit_profile_screen.dart';
 import '../../features/settings/settings_screen.dart';
@@ -31,6 +33,7 @@ abstract final class Routes {
   static const register = '/register';
   static const forgotPassword = '/forgot-password';
   static const verifyEmail = '/settings/verify-email';
+  static const welcome = '/welcome';
   static const home = '/';
   static const budget = '/budget';
   static const expenses = '/expenses';
@@ -53,6 +56,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   // Re-run the redirect whenever the login state changes (login, logout, session expired).
   final authChanged = ValueNotifier(0);
   ref.listen(authControllerProvider, (_, _) => authChanged.value++);
+  ref.listen(onboardingProvider, (_, _) => authChanged.value++);
   ref.onDispose(authChanged.dispose);
 
   return GoRouter(
@@ -68,7 +72,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onAuthPage = location == Routes.login || location == Routes.register || location == Routes.forgotPassword;
 
       if (!loggedIn) return onAuthPage ? null : Routes.login;
-      if (onAuthPage || location == Routes.splash) return Routes.home;
+      if (ref.read(onboardingProvider)) return location == Routes.welcome ? null : Routes.welcome;
+      if (onAuthPage || location == Routes.splash || location == Routes.welcome) return Routes.home;
       return null;
     },
     routes: [
@@ -76,6 +81,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.login, builder: (_, _) => const LoginScreen()),
       GoRoute(path: Routes.register, builder: (_, _) => const RegisterScreen()),
       GoRoute(path: Routes.forgotPassword, builder: (_, _) => const ForgotPasswordScreen()),
+      GoRoute(path: Routes.welcome, builder: (_, _) => const WelcomeScreen()),
 
       // The four tabs.
       StatefulShellRoute.indexedStack(

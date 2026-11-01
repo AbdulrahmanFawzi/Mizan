@@ -28,6 +28,20 @@ class BudgetActions {
     _refresh();
   }
 
+  // The guided setup's budget. Names that already exist are skipped, so trying again after an error is safe.
+  Future<void> createStarterBudget({required Map<String, double> categories, required double savingsLimit}) async {
+    final existing = await _ref.read(categoriesProvider.future);
+    final names = {for (final c in existing) c.name.toLowerCase()};
+    for (final MapEntry(key: name, value: limit) in categories.entries) {
+      if (!names.contains(name.toLowerCase())) {
+        await _ref.read(categoryRepositoryProvider).create(name: name, monthlyLimit: limit);
+      }
+    }
+    final savings = existing.firstWhere((c) => c.kind == CategoryKind.savings);
+    await _ref.read(budgetRepositoryProvider).setLimit(savings.id, savingsLimit);
+    _refresh();
+  }
+
   Future<void> deleteCategory(String categoryId) async {
     await _ref.read(categoryRepositoryProvider).delete(categoryId);
     _refresh();

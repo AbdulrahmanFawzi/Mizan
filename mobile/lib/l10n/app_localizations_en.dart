@@ -803,4 +803,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportData => 'Export my data';
+
+  @override
+  String stepOf(int step, int total) {
+    return 'Step $step of $total';
+  }
+
+  @override
+  String get skipSetup => 'Skip';
+
+  @override
+  String get later => 'Later';
+
+  @override
+  String get finishSetup => 'Not now, take me to the app';
+
+  @override
+  String get setupBudgetTitle => 'Plan your month';
+
+  @override
+  String get setupBudgetExplain =>
+      'Here are common categories with limits suggested from your income. Untick what you don\'t need and change any amount. You can edit all of this later.';
+
+  @override
+  String setupBudgetTotal(String planned, String income) {
+    return 'Planned: $planned of your $income income';
+  }
+
+  @override
+  String get createBudget => 'Create my budget';
 }

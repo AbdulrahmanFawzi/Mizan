@@ -30,3 +30,11 @@ API: `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`, `POST /a
 | P2-11 | Only the text language changes on the server; number and date formatting stay invariant (no Arabic decimal separator, no Hijri dates by accident). |
 | P2-12 | The code throws in English. `ErrorText` (API) holds the Arabic version of every user-facing message; a test fails if a new fixed message has no Arabic. Provider errors (bank, consent) show a friendly message, never technical details. |
 | P2-13 | Emails stay bilingual (Arabic, then English): they're sent in the background, and the user's language isn't stored yet. |
+
+## Guided setup after sign-up
+
+| ID | Decision |
+|---|---|
+| P2-14 | A new account opens a 3-step setup: confirm the email → choose categories with limits suggested from the income → link a bank. Every step can be skipped. |
+| P2-15 | Suggested categories (share of income): rent & bills 25%, groceries 12%, restaurants & coffee 8%, transport & fuel 8%, shopping 7%, entertainment 5%, health 3%, savings 10%. Rounded to 50 SAR. Names match the bank categorization keywords. |
+| P2-16 | "Setup pending" is saved on the device, so closing the app halfway brings the user back to it. Logging out clears it. |

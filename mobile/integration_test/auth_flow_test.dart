@@ -45,6 +45,11 @@ void main() {
     await tester.tap(find.byType(FilledButton));
     await tester.pumpAndSettle(const Duration(seconds: 1));
 
+    // A new account starts with the guided setup; this journey skips it.
+    await pumpUntilFound(tester, find.byKey(const Key('skipSetup')));
+    await tester.tap(find.byKey(const Key('skipSetup')));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
     // Dashboard from GET /api/dashboard, name from GET /api/me
     expect(find.byKey(const Key('availableAmount')), findsOneWidget);
     expect(find.textContaining('Integration Test'), findsOneWidget);

@@ -467,5 +467,33 @@
   "newPassword": "New password",
   "backToLogin": "Back to login",
   "verifyBeforeLink": "Confirm your email first. It protects your account before linking a bank.",
-  "exportData": "Export my data"
+  "exportData": "Export my data",
+  "stepOf": "Step {step} of {total}",
+  "@stepOf": {
+    "placeholders": {
+      "step": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "skipSetup": "Skip",
+  "later": "Later",
+  "finishSetup": "Not now, take me to the app",
+  "setupBudgetTitle": "Plan your month",
+  "setupBudgetExplain": "Here are common categories with limits suggested from your income. Untick what you don't need and change any amount. You can edit all of this later.",
+  "setupBudgetTotal": "Planned: {planned} of your {income} income",
+  "@setupBudgetTotal": {
+    "placeholders": {
+      "planned": {
+        "type": "String"
+      },
+      "income": {
+        "type": "String"
+      }
+    }
+  },
+  "createBudget": "Create my budget"
 }
