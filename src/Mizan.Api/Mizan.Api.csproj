@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Mizan.Api.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Mizan.Application\Mizan.Application.csproj" />
     <ProjectReference Include="..\Mizan.Infrastructure\Mizan.Infrastructure.csproj" />
   </ItemGroup>

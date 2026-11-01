@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mizan/core/network/api_client.dart';
 import 'package:mizan/core/storage/preferences.dart';
 import 'package:mizan/core/storage/token_storage.dart';
 import 'package:mizan/features/auth/application/auth_controller.dart';
@@ -207,5 +208,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(actions.updates, [('Abdulrahman', 12000.0, 27)]);
+  });
+
+  test('the API gets the language the app shows', () {
+    expect(apiLanguage(const Locale('en'), const Locale('ar')), 'en');
+    expect(apiLanguage(null, const Locale('en', 'US')), 'en');
+    expect(apiLanguage(null, const Locale('fr')), 'ar');
   });
 }

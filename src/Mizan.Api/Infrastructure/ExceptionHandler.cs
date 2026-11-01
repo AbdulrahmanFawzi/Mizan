@@ -39,7 +39,7 @@ internal sealed class ExceptionHandler(IProblemDetailsService problemDetails, IL
             {
                 Status = status,
                 Title = title,
-                Detail = status == StatusCodes.Status500InternalServerError ? null : exception.Message,
+                Detail = status == StatusCodes.Status500InternalServerError ? null : ErrorText.For(exception),
             },
         });
     }

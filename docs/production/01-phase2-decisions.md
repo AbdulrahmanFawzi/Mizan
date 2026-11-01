@@ -21,3 +21,12 @@ API: `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`, `POST /a
 | P2-7 | Settings → "Export my data" downloads one JSON file (`GET /api/me/export`, named `halalati-data-<date>.json`) and opens the phone's share sheet. |
 | P2-8 | It holds everything we keep: profile, categories, budgets, all transactions, goals, notifications, bank connections and accounts, merchant rules. IBANs stay masked. |
 | P2-9 | JSON, not PDF or CSV: complete and machine-readable (portability). A readable report can come later if users ask. |
+
+## Server text in the app's language
+
+| ID | Decision |
+|---|---|
+| P2-10 | The app sends `Accept-Language` (`ar` or `en`, the same language it shows). Insights, notifications and error messages come back in it. Arabic is the default. |
+| P2-11 | Only the text language changes on the server; number and date formatting stay invariant (no Arabic decimal separator, no Hijri dates by accident). |
+| P2-12 | The code throws in English. `ErrorText` (API) holds the Arabic version of every user-facing message; a test fails if a new fixed message has no Arabic. Provider errors (bank, consent) show a friendly message, never technical details. |
+| P2-13 | Emails stay bilingual (Arabic, then English): they're sent in the background, and the user's language isn't stored yet. |

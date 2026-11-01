@@ -1,6 +1,9 @@
 namespace Mizan.Application.Common;
 
-public sealed class NotFoundException(string resource) : Exception($"{resource} was not found.");
+public sealed class NotFoundException(string resource) : Exception($"{resource} was not found.")
+{
+    public string Resource => resource;
+}
 
 public sealed class ConflictException(string message) : Exception(message);
 

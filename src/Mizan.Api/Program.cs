@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Mizan.Api.Endpoints;
 using Mizan.Api.Infrastructure;
@@ -24,6 +26,15 @@ if (app.Environment.IsDevelopment())
     await using var scope = app.Services.CreateAsyncScope();
     await scope.ServiceProvider.GetRequiredService<MizanDbContext>().Database.MigrateAsync();
 }
+
+// Insights, notifications and error messages follow the app's language (Accept-Language), Arabic by default.
+// Only the UI language changes: number and date formatting stay invariant (no Arabic separators or Hijri dates).
+app.UseRequestLocalization(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture(CultureInfo.InvariantCulture, new CultureInfo("ar"));
+    options.SupportedCultures = [CultureInfo.InvariantCulture];
+    options.SupportedUICultures = [new CultureInfo("ar"), new CultureInfo("en")];
+});
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
