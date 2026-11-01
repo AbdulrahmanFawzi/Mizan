@@ -7,6 +7,7 @@ import '../../../core/network/api_exception.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/widgets/ui.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../banking/presentation/review_screen.dart';
 import '../../budget/data/budget_repository.dart';
 import '../../categories/data/category.dart';
 import '../application/transactions_controller.dart';
@@ -23,10 +24,13 @@ class TransactionsScreen extends ConsumerWidget {
     final categories = {for (final c in ref.watch(categoriesProvider).value ?? const <Category>[]) c.id: c};
     final spent = ref.watch(budgetProvider).value?.totalSpent;
 
-    final header = PageHeader(
-      title: l10n.tabExpenses,
-      subtitle: spent == null ? null : '${l10n.spentThisPeriod}: ${context.money(spent)}',
-    );
+    final header = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      PageHeader(
+        title: l10n.tabExpenses,
+        subtitle: spent == null ? null : '${l10n.spentThisPeriod}: ${context.money(spent)}',
+      ),
+      ReviewBanner(onOpen: () => context.push(Routes.review)),
+    ]);
 
     return Scaffold(
       body: SafeArea(

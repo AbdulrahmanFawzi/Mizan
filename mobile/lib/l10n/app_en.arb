@@ -298,5 +298,144 @@
   "appearance": "Appearance",
   "themeSystem": "Auto",
   "themeLight": "Light",
-  "themeDark": "Dark"
+  "themeDark": "Dark",
+  "banks": "Bank accounts",
+  "linkBank": "Link a bank",
+  "linkBankTitle": "Your expenses, automatically",
+  "linkBankExplain": "Link your bank once and your purchases join your budget by themselves. We can only read accounts, balances and transactions — we can never move your money.",
+  "linkBankSecure": "Through Lean, licensed by the Saudi Central Bank (SAMA).",
+  "linking": "Bringing in your transactions…",
+  "linkFailed": "The bank wasn't linked. You can try again.",
+  "bankLinked": "Bank linked",
+  "lastSynced": "Updated {time}",
+  "@lastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "notSyncedYet": "Not updated yet",
+  "syncNow": "Refresh",
+  "consentDaysLeft": "{count, plural, =1{Link ends tomorrow} other{Link ends in {count} days}}",
+  "@consentDaysLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "consentEnded": "Link ended — link again to keep updating",
+  "relink": "Link again",
+  "removeBank": "Remove bank",
+  "removeBankQuestion": "Remove {bank}?",
+  "@removeBankQuestion": {
+    "placeholders": {
+      "bank": {
+        "type": "String"
+      }
+    }
+  },
+  "removeBankExplain": "We'll stop reading this bank. What should happen to the transactions it added?",
+  "keepTransactions": "Keep them",
+  "deleteTransactions": "Delete them",
+  "bankRemoved": "Bank removed",
+  "countsInBudget": "Counts in budget",
+  "accountCurrent": "Current account",
+  "accountSavings": "Savings account",
+  "accountCreditCard": "Credit card",
+  "accountChargeCard": "Charge card",
+  "accountPrepaid": "Prepaid card",
+  "accountEMoney": "Wallet",
+  "accountOther": "Other account",
+  "otherCurrencyNote": "Other currencies don't count in the budget",
+  "reviewTitle": "Needs your decision",
+  "reviewBanner": "{count, plural, =1{1 bank transaction needs your decision} other{{count} bank transactions need your decision}}",
+  "@reviewBanner": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewEmpty": "All clear — nothing to review",
+  "duplicateQuestion": "Is this the purchase you recorded yourself?",
+  "duplicateExplain": "Until you answer, it's counted once.",
+  "transferQuestion": "Is this a transfer between your own accounts?",
+  "transferExplain": "Transfers and card payments aren't spending, so they don't count until you say so.",
+  "sameAsManual": "Same purchase",
+  "notDuplicate": "Different",
+  "ownTransfer": "Yes, a transfer",
+  "itsSpending": "No, it's spending",
+  "fromBank": "From the bank",
+  "youRecorded": "You recorded",
+  "pendingLabel": "Pending",
+  "refundLabel": "Refund",
+  "incomingLabel": "Money in",
+  "transferLabel": "Transfer",
+  "excludedLabel": "Not counted",
+  "outsideBudgetLabel": "Not in budget",
+  "cashWithdrawal": "Cash withdrawal",
+  "bankTransaction": "Bank transaction",
+  "bankTransactionNote": "The amount and date come from your bank. You can change the category or leave it out of your budget.",
+  "rememberMerchant": "Always put {merchant} here",
+  "@rememberMerchant": {
+    "placeholders": {
+      "merchant": {
+        "type": "String"
+      }
+    }
+  },
+  "countInBudget": "Count in my budget",
+  "noteLabel": "Note",
+  "bankFee": "Includes a {amount} bank fee",
+  "@bankFee": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "autoCategorized": "Category picked automatically",
+  "notifConsentExpiringTitle": "Bank link ends soon",
+  "notifConsentExpiring": "Your {bank} link ends in {days} days. Renew it to keep expenses coming in.",
+  "@notifConsentExpiring": {
+    "placeholders": {
+      "bank": {
+        "type": "String"
+      },
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "notifConsentExpiredTitle": "Bank link ended",
+  "notifConsentExpired": "Link {bank} again to keep expenses coming in by themselves.",
+  "@notifConsentExpired": {
+    "placeholders": {
+      "bank": {
+        "type": "String"
+      }
+    }
+  },
+  "notifReviewTitle": "Transactions to review",
+  "notifReview": "{count} bank transactions need your decision.",
+  "@notifReview": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "bankRefreshing": "Your bank is updating. New transactions will arrive shortly.",
+  "outsideBudgetExplain": "This came from “{account}”, which isn't part of your budget, so it doesn't count whatever its category.",
+  "@outsideBudgetExplain": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "includeAccount": "Include this account in my budget",
+  "accountIncluded": "The account now counts in your budget"
 }

@@ -5,6 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/application/auth_controller.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/register_screen.dart';
+import '../../features/banking/presentation/bank_connections_screen.dart';
+import '../../features/banking/presentation/bank_link_screen.dart';
+import '../../features/banking/presentation/bank_transaction_screen.dart';
+import '../../features/banking/presentation/review_screen.dart';
 import '../../features/budget/presentation/budget_screen.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/goals/data/goal.dart';
@@ -32,6 +36,9 @@ abstract final class Routes {
   static const notifications = '/notifications';
   static const settings = '/settings';
   static const editProfile = '/settings/profile';
+  static const banks = '/settings/banks';
+  static const linkBank = '/settings/banks/link';
+  static const review = '/review';
 
   static String editExpense(String id) => '/expenses/$id';
   static String goal(String id) => '/goals/$id';
@@ -80,13 +87,25 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: Routes.newExpense, builder: (_, _) => const ExpenseFormScreen()),
       GoRoute(
         path: '/expenses/:id',
-        builder: (_, state) => ExpenseFormScreen(existing: state.extra as Transaction?),
+        // Bank transactions have their own screen: amount and date can't be edited (BR-X4).
+        builder: (_, state) => switch (state.extra) {
+          Transaction(isFromBank: true) && final transaction => BankTransactionScreen(transaction: transaction),
+          final extra => ExpenseFormScreen(existing: extra as Transaction?),
+        },
       ),
+      GoRoute(path: Routes.review, builder: (_, _) => const ReviewScreen()),
       GoRoute(path: Routes.notifications, builder: (_, _) => const NotificationsScreen()),
       GoRoute(
         path: Routes.settings,
         builder: (_, _) => const SettingsScreen(),
-        routes: [GoRoute(path: 'profile', builder: (_, _) => const EditProfileScreen())],
+        routes: [
+          GoRoute(path: 'profile', builder: (_, _) => const EditProfileScreen()),
+          GoRoute(
+            path: 'banks',
+            builder: (_, _) => const BankConnectionsScreen(),
+            routes: [GoRoute(path: 'link', builder: (_, _) => const BankLinkScreen())],
+          ),
+        ],
       ),
       GoRoute(path: Routes.newGoal, builder: (_, _) => const GoalFormScreen()),
       GoRoute(

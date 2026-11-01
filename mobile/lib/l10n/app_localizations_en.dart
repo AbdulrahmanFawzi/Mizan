@@ -512,4 +512,241 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeDark => 'Dark';
+
+  @override
+  String get banks => 'Bank accounts';
+
+  @override
+  String get linkBank => 'Link a bank';
+
+  @override
+  String get linkBankTitle => 'Your expenses, automatically';
+
+  @override
+  String get linkBankExplain =>
+      'Link your bank once and your purchases join your budget by themselves. We can only read accounts, balances and transactions — we can never move your money.';
+
+  @override
+  String get linkBankSecure =>
+      'Through Lean, licensed by the Saudi Central Bank (SAMA).';
+
+  @override
+  String get linking => 'Bringing in your transactions…';
+
+  @override
+  String get linkFailed => 'The bank wasn\'t linked. You can try again.';
+
+  @override
+  String get bankLinked => 'Bank linked';
+
+  @override
+  String lastSynced(String time) {
+    return 'Updated $time';
+  }
+
+  @override
+  String get notSyncedYet => 'Not updated yet';
+
+  @override
+  String get syncNow => 'Refresh';
+
+  @override
+  String consentDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Link ends in $count days',
+      one: 'Link ends tomorrow',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get consentEnded => 'Link ended — link again to keep updating';
+
+  @override
+  String get relink => 'Link again';
+
+  @override
+  String get removeBank => 'Remove bank';
+
+  @override
+  String removeBankQuestion(String bank) {
+    return 'Remove $bank?';
+  }
+
+  @override
+  String get removeBankExplain =>
+      'We\'ll stop reading this bank. What should happen to the transactions it added?';
+
+  @override
+  String get keepTransactions => 'Keep them';
+
+  @override
+  String get deleteTransactions => 'Delete them';
+
+  @override
+  String get bankRemoved => 'Bank removed';
+
+  @override
+  String get countsInBudget => 'Counts in budget';
+
+  @override
+  String get accountCurrent => 'Current account';
+
+  @override
+  String get accountSavings => 'Savings account';
+
+  @override
+  String get accountCreditCard => 'Credit card';
+
+  @override
+  String get accountChargeCard => 'Charge card';
+
+  @override
+  String get accountPrepaid => 'Prepaid card';
+
+  @override
+  String get accountEMoney => 'Wallet';
+
+  @override
+  String get accountOther => 'Other account';
+
+  @override
+  String get otherCurrencyNote => 'Other currencies don\'t count in the budget';
+
+  @override
+  String get reviewTitle => 'Needs your decision';
+
+  @override
+  String reviewBanner(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count bank transactions need your decision',
+      one: '1 bank transaction needs your decision',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewEmpty => 'All clear — nothing to review';
+
+  @override
+  String get duplicateQuestion => 'Is this the purchase you recorded yourself?';
+
+  @override
+  String get duplicateExplain => 'Until you answer, it\'s counted once.';
+
+  @override
+  String get transferQuestion =>
+      'Is this a transfer between your own accounts?';
+
+  @override
+  String get transferExplain =>
+      'Transfers and card payments aren\'t spending, so they don\'t count until you say so.';
+
+  @override
+  String get sameAsManual => 'Same purchase';
+
+  @override
+  String get notDuplicate => 'Different';
+
+  @override
+  String get ownTransfer => 'Yes, a transfer';
+
+  @override
+  String get itsSpending => 'No, it\'s spending';
+
+  @override
+  String get fromBank => 'From the bank';
+
+  @override
+  String get youRecorded => 'You recorded';
+
+  @override
+  String get pendingLabel => 'Pending';
+
+  @override
+  String get refundLabel => 'Refund';
+
+  @override
+  String get incomingLabel => 'Money in';
+
+  @override
+  String get transferLabel => 'Transfer';
+
+  @override
+  String get excludedLabel => 'Not counted';
+
+  @override
+  String get outsideBudgetLabel => 'Not in budget';
+
+  @override
+  String get cashWithdrawal => 'Cash withdrawal';
+
+  @override
+  String get bankTransaction => 'Bank transaction';
+
+  @override
+  String get bankTransactionNote =>
+      'The amount and date come from your bank. You can change the category or leave it out of your budget.';
+
+  @override
+  String rememberMerchant(String merchant) {
+    return 'Always put $merchant here';
+  }
+
+  @override
+  String get countInBudget => 'Count in my budget';
+
+  @override
+  String get noteLabel => 'Note';
+
+  @override
+  String bankFee(String amount) {
+    return 'Includes a $amount bank fee';
+  }
+
+  @override
+  String get autoCategorized => 'Category picked automatically';
+
+  @override
+  String get notifConsentExpiringTitle => 'Bank link ends soon';
+
+  @override
+  String notifConsentExpiring(String bank, String days) {
+    return 'Your $bank link ends in $days days. Renew it to keep expenses coming in.';
+  }
+
+  @override
+  String get notifConsentExpiredTitle => 'Bank link ended';
+
+  @override
+  String notifConsentExpired(String bank) {
+    return 'Link $bank again to keep expenses coming in by themselves.';
+  }
+
+  @override
+  String get notifReviewTitle => 'Transactions to review';
+
+  @override
+  String notifReview(String count) {
+    return '$count bank transactions need your decision.';
+  }
+
+  @override
+  String get bankRefreshing =>
+      'Your bank is updating. New transactions will arrive shortly.';
+
+  @override
+  String outsideBudgetExplain(String account) {
+    return 'This came from “$account”, which isn\'t part of your budget, so it doesn\'t count whatever its category.';
+  }
+
+  @override
+  String get includeAccount => 'Include this account in my budget';
+
+  @override
+  String get accountIncluded => 'The account now counts in your budget';
 }

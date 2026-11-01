@@ -979,6 +979,402 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Dark'**
   String get themeDark;
+
+  /// No description provided for @banks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank accounts'**
+  String get banks;
+
+  /// No description provided for @linkBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a bank'**
+  String get linkBank;
+
+  /// No description provided for @linkBankTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your expenses, automatically'**
+  String get linkBankTitle;
+
+  /// No description provided for @linkBankExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Link your bank once and your purchases join your budget by themselves. We can only read accounts, balances and transactions — we can never move your money.'**
+  String get linkBankExplain;
+
+  /// No description provided for @linkBankSecure.
+  ///
+  /// In en, this message translates to:
+  /// **'Through Lean, licensed by the Saudi Central Bank (SAMA).'**
+  String get linkBankSecure;
+
+  /// No description provided for @linking.
+  ///
+  /// In en, this message translates to:
+  /// **'Bringing in your transactions…'**
+  String get linking;
+
+  /// No description provided for @linkFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The bank wasn\'t linked. You can try again.'**
+  String get linkFailed;
+
+  /// No description provided for @bankLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank linked'**
+  String get bankLinked;
+
+  /// No description provided for @lastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {time}'**
+  String lastSynced(String time);
+
+  /// No description provided for @notSyncedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not updated yet'**
+  String get notSyncedYet;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get syncNow;
+
+  /// No description provided for @consentDaysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Link ends tomorrow} other{Link ends in {count} days}}'**
+  String consentDaysLeft(int count);
+
+  /// No description provided for @consentEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Link ended — link again to keep updating'**
+  String get consentEnded;
+
+  /// No description provided for @relink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link again'**
+  String get relink;
+
+  /// No description provided for @removeBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove bank'**
+  String get removeBank;
+
+  /// No description provided for @removeBankQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {bank}?'**
+  String removeBankQuestion(String bank);
+
+  /// No description provided for @removeBankExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll stop reading this bank. What should happen to the transactions it added?'**
+  String get removeBankExplain;
+
+  /// No description provided for @keepTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them'**
+  String get keepTransactions;
+
+  /// No description provided for @deleteTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete them'**
+  String get deleteTransactions;
+
+  /// No description provided for @bankRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank removed'**
+  String get bankRemoved;
+
+  /// No description provided for @countsInBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Counts in budget'**
+  String get countsInBudget;
+
+  /// No description provided for @accountCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current account'**
+  String get accountCurrent;
+
+  /// No description provided for @accountSavings.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings account'**
+  String get accountSavings;
+
+  /// No description provided for @accountCreditCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit card'**
+  String get accountCreditCard;
+
+  /// No description provided for @accountChargeCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Charge card'**
+  String get accountChargeCard;
+
+  /// No description provided for @accountPrepaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepaid card'**
+  String get accountPrepaid;
+
+  /// No description provided for @accountEMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet'**
+  String get accountEMoney;
+
+  /// No description provided for @accountOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other account'**
+  String get accountOther;
+
+  /// No description provided for @otherCurrencyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Other currencies don\'t count in the budget'**
+  String get otherCurrencyNote;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs your decision'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 bank transaction needs your decision} other{{count} bank transactions need your decision}}'**
+  String reviewBanner(int count);
+
+  /// No description provided for @reviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'All clear — nothing to review'**
+  String get reviewEmpty;
+
+  /// No description provided for @duplicateQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this the purchase you recorded yourself?'**
+  String get duplicateQuestion;
+
+  /// No description provided for @duplicateExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Until you answer, it\'s counted once.'**
+  String get duplicateExplain;
+
+  /// No description provided for @transferQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this a transfer between your own accounts?'**
+  String get transferQuestion;
+
+  /// No description provided for @transferExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers and card payments aren\'t spending, so they don\'t count until you say so.'**
+  String get transferExplain;
+
+  /// No description provided for @sameAsManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Same purchase'**
+  String get sameAsManual;
+
+  /// No description provided for @notDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Different'**
+  String get notDuplicate;
+
+  /// No description provided for @ownTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, a transfer'**
+  String get ownTransfer;
+
+  /// No description provided for @itsSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'No, it\'s spending'**
+  String get itsSpending;
+
+  /// No description provided for @fromBank.
+  ///
+  /// In en, this message translates to:
+  /// **'From the bank'**
+  String get fromBank;
+
+  /// No description provided for @youRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'You recorded'**
+  String get youRecorded;
+
+  /// No description provided for @pendingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pendingLabel;
+
+  /// No description provided for @refundLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Refund'**
+  String get refundLabel;
+
+  /// No description provided for @incomingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Money in'**
+  String get incomingLabel;
+
+  /// No description provided for @transferLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer'**
+  String get transferLabel;
+
+  /// No description provided for @excludedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not counted'**
+  String get excludedLabel;
+
+  /// No description provided for @outsideBudgetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in budget'**
+  String get outsideBudgetLabel;
+
+  /// No description provided for @cashWithdrawal.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash withdrawal'**
+  String get cashWithdrawal;
+
+  /// No description provided for @bankTransaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank transaction'**
+  String get bankTransaction;
+
+  /// No description provided for @bankTransactionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The amount and date come from your bank. You can change the category or leave it out of your budget.'**
+  String get bankTransactionNote;
+
+  /// No description provided for @rememberMerchant.
+  ///
+  /// In en, this message translates to:
+  /// **'Always put {merchant} here'**
+  String rememberMerchant(String merchant);
+
+  /// No description provided for @countInBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Count in my budget'**
+  String get countInBudget;
+
+  /// No description provided for @noteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get noteLabel;
+
+  /// No description provided for @bankFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes a {amount} bank fee'**
+  String bankFee(String amount);
+
+  /// No description provided for @autoCategorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Category picked automatically'**
+  String get autoCategorized;
+
+  /// No description provided for @notifConsentExpiringTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank link ends soon'**
+  String get notifConsentExpiringTitle;
+
+  /// No description provided for @notifConsentExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {bank} link ends in {days} days. Renew it to keep expenses coming in.'**
+  String notifConsentExpiring(String bank, String days);
+
+  /// No description provided for @notifConsentExpiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank link ended'**
+  String get notifConsentExpiredTitle;
+
+  /// No description provided for @notifConsentExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Link {bank} again to keep expenses coming in by themselves.'**
+  String notifConsentExpired(String bank);
+
+  /// No description provided for @notifReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions to review'**
+  String get notifReviewTitle;
+
+  /// No description provided for @notifReview.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} bank transactions need your decision.'**
+  String notifReview(String count);
+
+  /// No description provided for @bankRefreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Your bank is updating. New transactions will arrive shortly.'**
+  String get bankRefreshing;
+
+  /// No description provided for @outsideBudgetExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'This came from “{account}”, which isn\'t part of your budget, so it doesn\'t count whatever its category.'**
+  String outsideBudgetExplain(String account);
+
+  /// No description provided for @includeAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Include this account in my budget'**
+  String get includeAccount;
+
+  /// No description provided for @accountIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'The account now counts in your budget'**
+  String get accountIncluded;
 }
 
 class _AppLocalizationsDelegate

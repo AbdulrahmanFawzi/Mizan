@@ -67,6 +67,17 @@ class SettingsScreen extends ConsumerWidget {
             const Card(child: SizedBox(height: 180, child: Center(child: CircularProgressIndicator())))
           else
             _ProfileCard(profile: profile),
+          SectionHeader(l10n.banks),
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: _SettingsRow(
+              key: const Key('openBanks'),
+              icon: Icons.account_balance_rounded,
+              color: colors.mintOnLight,
+              label: l10n.banks,
+              onTap: () => context.push(Routes.banks),
+            ),
+          ),
           SectionHeader(l10n.languageSetting),
           SizedBox(
             width: double.infinity,

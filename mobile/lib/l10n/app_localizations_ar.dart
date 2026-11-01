@@ -512,4 +512,241 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get themeDark => 'داكن';
+
+  @override
+  String get banks => 'الحسابات البنكية';
+
+  @override
+  String get linkBank => 'اربط بنكك';
+
+  @override
+  String get linkBankTitle => 'مصروفاتك تدخل تلقائيًا';
+
+  @override
+  String get linkBankExplain =>
+      'اربط بنكك مرة وحدة، ومشترياتك تنضاف لميزانيتك بنفسها. نقدر نقرأ الحسابات والأرصدة والعمليات فقط، وما نقدر نحرّك فلوسك أبدًا.';
+
+  @override
+  String get linkBankSecure =>
+      'عن طريق Lean المرخّصة من البنك المركزي السعودي (ساما).';
+
+  @override
+  String get linking => 'نجيب عملياتك…';
+
+  @override
+  String get linkFailed => 'ما تم الربط. تقدر تحاول مرة ثانية.';
+
+  @override
+  String get bankLinked => 'تم ربط البنك';
+
+  @override
+  String lastSynced(String time) {
+    return 'آخر تحديث $time';
+  }
+
+  @override
+  String get notSyncedYet => 'لم يُحدّث بعد';
+
+  @override
+  String get syncNow => 'تحديث';
+
+  @override
+  String consentDaysLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'الربط ينتهي بعد $count يوم',
+      one: 'الربط ينتهي بكرة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get consentEnded => 'انتهى الربط، أعد الربط عشان يستمر التحديث';
+
+  @override
+  String get relink => 'أعد الربط';
+
+  @override
+  String get removeBank => 'إلغاء الربط';
+
+  @override
+  String removeBankQuestion(String bank) {
+    return 'إلغاء ربط $bank؟';
+  }
+
+  @override
+  String get removeBankExplain =>
+      'بنوقف قراءة هذا البنك. وش تبغى نسوي بالعمليات اللي أضافها؟';
+
+  @override
+  String get keepTransactions => 'احتفظ بها';
+
+  @override
+  String get deleteTransactions => 'احذفها';
+
+  @override
+  String get bankRemoved => 'تم إلغاء الربط';
+
+  @override
+  String get countsInBudget => 'يدخل الميزانية';
+
+  @override
+  String get accountCurrent => 'حساب جاري';
+
+  @override
+  String get accountSavings => 'حساب ادخار';
+
+  @override
+  String get accountCreditCard => 'بطاقة ائتمانية';
+
+  @override
+  String get accountChargeCard => 'بطاقة مسبقة السداد';
+
+  @override
+  String get accountPrepaid => 'بطاقة مسبقة الدفع';
+
+  @override
+  String get accountEMoney => 'محفظة';
+
+  @override
+  String get accountOther => 'حساب آخر';
+
+  @override
+  String get otherCurrencyNote => 'العملات الأخرى ما تدخل الميزانية';
+
+  @override
+  String get reviewTitle => 'تحتاج قرارك';
+
+  @override
+  String reviewBanner(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count عمليات بنكية تحتاج قرارك',
+      two: 'عمليتين بنكيتين تحتاج قرارك',
+      one: 'عملية بنكية تحتاج قرارك',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get reviewEmpty => 'كل شيء واضح، ما فيه شيء للمراجعة';
+
+  @override
+  String get duplicateQuestion => 'هذي نفس العملية اللي سجلتها بنفسك؟';
+
+  @override
+  String get duplicateExplain => 'لين تجاوب، تنحسب مرة وحدة.';
+
+  @override
+  String get transferQuestion => 'هذا تحويل بين حساباتك؟';
+
+  @override
+  String get transferExplain =>
+      'التحويلات وسداد البطاقة مو صرف، فما تنحسب لين تقول.';
+
+  @override
+  String get sameAsManual => 'نفس العملية';
+
+  @override
+  String get notDuplicate => 'عملية مختلفة';
+
+  @override
+  String get ownTransfer => 'نعم، تحويل';
+
+  @override
+  String get itsSpending => 'لا، صرف';
+
+  @override
+  String get fromBank => 'من البنك';
+
+  @override
+  String get youRecorded => 'سجلته أنت';
+
+  @override
+  String get pendingLabel => 'معلّقة';
+
+  @override
+  String get refundLabel => 'مسترجع';
+
+  @override
+  String get incomingLabel => 'مبلغ داخل';
+
+  @override
+  String get transferLabel => 'تحويل';
+
+  @override
+  String get excludedLabel => 'غير محسوبة';
+
+  @override
+  String get outsideBudgetLabel => 'خارج الميزانية';
+
+  @override
+  String get cashWithdrawal => 'سحب نقدي';
+
+  @override
+  String get bankTransaction => 'عملية بنكية';
+
+  @override
+  String get bankTransactionNote =>
+      'المبلغ والتاريخ من بنكك. تقدر تغيّر الفئة أو تستبعدها من ميزانيتك.';
+
+  @override
+  String rememberMerchant(String merchant) {
+    return 'دائمًا صنّف $merchant هنا';
+  }
+
+  @override
+  String get countInBudget => 'احسبها في ميزانيتي';
+
+  @override
+  String get noteLabel => 'ملاحظة';
+
+  @override
+  String bankFee(String amount) {
+    return 'تشمل رسوم بنكية $amount';
+  }
+
+  @override
+  String get autoCategorized => 'الفئة مختارة تلقائيًا';
+
+  @override
+  String get notifConsentExpiringTitle => 'ربط البنك ينتهي قريبًا';
+
+  @override
+  String notifConsentExpiring(String bank, String days) {
+    return 'ربط $bank ينتهي بعد $days يوم. جدّده عشان تستمر مصروفاتك تدخل.';
+  }
+
+  @override
+  String get notifConsentExpiredTitle => 'انتهى ربط البنك';
+
+  @override
+  String notifConsentExpired(String bank) {
+    return 'أعد ربط $bank عشان ترجع المصروفات تدخل بنفسها.';
+  }
+
+  @override
+  String get notifReviewTitle => 'عمليات تحتاج مراجعتك';
+
+  @override
+  String notifReview(String count) {
+    return 'عندك $count عمليات من البنك تحتاج قرارك.';
+  }
+
+  @override
+  String get bankRefreshing =>
+      'بنكك يتحدّث الحين، والعمليات الجديدة توصل بعد شوي.';
+
+  @override
+  String outsideBudgetExplain(String account) {
+    return 'هذي العملية من «$account» وهو خارج ميزانيتك، فما تنحسب مهما كانت فئتها.';
+  }
+
+  @override
+  String get includeAccount => 'أدخل هذا الحساب في ميزانيتي';
+
+  @override
+  String get accountIncluded => 'صار الحساب يدخل ميزانيتك';
 }

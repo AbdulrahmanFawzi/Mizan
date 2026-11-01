@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Mizan.Application.Abstractions;
 using Mizan.Domain.Transactions;
+using Mizan.Infrastructure.Persistence.Configurations;
 
 namespace Mizan.Infrastructure.Persistence.Repositories;
 
@@ -43,13 +44,16 @@ internal sealed class TransactionRepository(MizanDbContext db) : ITransactionRep
     public async Task<IReadOnlyList<Transaction>> ListByCategoryAsync(Guid userId, Guid categoryId, CancellationToken cancellationToken) =>
         await db.Transactions.Where(t => t.UserId == userId && t.CategoryId == categoryId).ToListAsync(cancellationToken);
 
+    // Sums each transaction's budget effect (bank transfers, exclusions and pending reviews count 0,
+    // refunds count negative). A category never goes below zero because of refunds (BR-F4).
     public async Task<IReadOnlyDictionary<Guid, decimal>> SumByCategoryAsync(
         Guid userId, DateOnly from, DateOnly to, CancellationToken cancellationToken) =>
-        await db.Transactions
+        (await db.Transactions
             .Where(t => t.UserId == userId && t.Date >= from && t.Date <= to)
             .GroupBy(t => t.CategoryId)
-            .Select(g => new { CategoryId = g.Key, Total = g.Sum(t => t.Amount.Amount) })
-            .ToDictionaryAsync(x => x.CategoryId, x => x.Total, cancellationToken);
+            .Select(g => new { CategoryId = g.Key, Total = g.Sum(t => EF.Property<decimal>(t, TransactionConfiguration.BudgetAmount)) })
+            .ToListAsync(cancellationToken))
+        .ToDictionary(x => x.CategoryId, x => Math.Max(0m, x.Total));
 
     public async Task<IReadOnlyDictionary<Guid, decimal>> SumByGoalAsync(Guid userId, CancellationToken cancellationToken) =>
         await db.Transactions

@@ -5,7 +5,7 @@ import '../../../core/network/api_client.dart';
 
 // Named AppNotification, not Notification: Flutter already has a `Notification` class
 // (the one NotificationListener uses), and the clash would be confusing.
-enum NotificationType { budgetThreshold, goalCompleted, unknown }
+enum NotificationType { budgetThreshold, goalCompleted, consentExpiring, consentExpired, reviewNeeded, unknown }
 
 class AppNotification {
   const AppNotification({
@@ -22,6 +22,9 @@ class AppNotification {
         type: switch (json['type']) {
           'BudgetThreshold' => NotificationType.budgetThreshold,
           'GoalCompleted' => NotificationType.goalCompleted,
+          'ConsentExpiring' => NotificationType.consentExpiring,
+          'ConsentExpired' => NotificationType.consentExpired,
+          'ReviewNeeded' => NotificationType.reviewNeeded,
           // A type added to the API later must not crash older versions of the app.
           _ => NotificationType.unknown,
         },

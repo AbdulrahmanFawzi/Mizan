@@ -34,6 +34,24 @@ NotificationView describeNotification(
         icon: Icons.emoji_events_outlined,
         color: const Color(0xFF0E9F6E),
       ),
+    NotificationType.consentExpiring => (
+        title: l10n.notifConsentExpiringTitle,
+        message: l10n.notifConsentExpiring(data['bankName'] ?? '', data['daysLeft'] ?? ''),
+        icon: Icons.link_rounded,
+        color: const Color(0xFFF59E0B),
+      ),
+    NotificationType.consentExpired => (
+        title: l10n.notifConsentExpiredTitle,
+        message: l10n.notifConsentExpired(data['bankName'] ?? ''),
+        icon: Icons.link_off_rounded,
+        color: const Color(0xFFE5484D),
+      ),
+    NotificationType.reviewNeeded => (
+        title: l10n.notifReviewTitle,
+        message: l10n.notifReview(data['count'] ?? ''),
+        icon: Icons.rule_rounded,
+        color: const Color(0xFFF59E0B),
+      ),
     NotificationType.unknown => (
         title: l10n.notifOther,
         message: notification.serverMessage,

@@ -64,6 +64,183 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                     b.ToTable("refresh_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("Mizan.Domain.Banking.BankAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset?>("BalanceAsOf")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("balance_as_of");
+
+                    b.Property<Guid>("ConnectionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("connection_id");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character(3)")
+                        .HasColumnName("currency")
+                        .IsFixedLength();
+
+                    b.Property<string>("Iban")
+                        .HasColumnType("text")
+                        .HasColumnName("iban_encrypted");
+
+                    b.Property<bool>("IncludeInBudget")
+                        .HasColumnType("boolean")
+                        .HasColumnName("include_in_budget");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("nickname");
+
+                    b.Property<string>("ProviderAccountId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("provider_account_id");
+
+                    b.Property<decimal?>("_balanceAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("balance");
+
+                    b.HasKey("Id")
+                        .HasName("pk_bank_accounts");
+
+                    b.HasIndex("ConnectionId", "ProviderAccountId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bank_accounts_connection_id_provider_account_id");
+
+                    b.ToTable("bank_accounts", (string)null);
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Banking.BankConnection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("BankIdentifier")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_identifier");
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_name");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("HistoryImported")
+                        .HasColumnType("boolean")
+                        .HasColumnName("history_imported");
+
+                    b.Property<DateTimeOffset?>("LastRefreshRequestedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_refresh_requested_at");
+
+                    b.Property<DateTimeOffset?>("LastSyncedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_synced_at");
+
+                    b.Property<string>("ProviderEntityId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("provider_entity_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.PrimitiveCollection<List<int>>("_remindersSent")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("reminders_sent");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "Consent", "Mizan.Domain.Banking.BankConnection.Consent#Consent", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<DateTimeOffset>("ExpiresAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("consent_expires_at");
+
+                            b1.Property<DateTimeOffset>("GrantedAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("consent_granted_at");
+                        });
+
+                    b.HasKey("Id")
+                        .HasName("pk_bank_connections");
+
+                    b.HasIndex("ProviderEntityId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bank_connections_provider_entity_id");
+
+                    b.HasIndex("UserId", "BankIdentifier")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bank_connections_user_id_bank_identifier")
+                        .HasFilter("status = 'Active'");
+
+                    b.ToTable("bank_connections", (string)null);
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Banking.BankingCustomer", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("provider");
+
+                    b.Property<string>("ProviderCustomerId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("provider_customer_id");
+
+                    b.HasKey("UserId")
+                        .HasName("pk_bank_customers");
+
+                    b.HasIndex("ProviderCustomerId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_bank_customers_provider_customer_id");
+
+                    b.ToTable("bank_customers", (string)null);
+                });
+
             modelBuilder.Entity("Mizan.Domain.Budgets.Budget", b =>
                 {
                     b.Property<Guid>("Id")
@@ -197,6 +374,43 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                     b.ToTable("categories", (string)null);
                 });
 
+            modelBuilder.Entity("Mizan.Domain.Categorization.MerchantRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("category_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Merchant")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("merchant_key");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_merchant_rules");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_merchant_rules_category_id");
+
+                    b.HasIndex("UserId", "Merchant")
+                        .IsUnique()
+                        .HasDatabaseName("ix_merchant_rules_user_id_merchant_key");
+
+                    b.ToTable("merchant_rules", (string)null);
+                });
+
             modelBuilder.Entity("Mizan.Domain.Goals.Goal", b =>
                 {
                     b.Property<Guid>("Id")
@@ -277,6 +491,25 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Mizan.Domain.Importing.RejectedMatch", b =>
+                {
+                    b.Property<Guid>("BankTransactionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_transaction_id");
+
+                    b.Property<Guid>("ManualTransactionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("manual_transaction_id");
+
+                    b.HasKey("BankTransactionId", "ManualTransactionId")
+                        .HasName("pk_rejected_matches");
+
+                    b.HasIndex("ManualTransactionId")
+                        .HasDatabaseName("ix_rejected_matches_manual_transaction_id");
+
+                    b.ToTable("rejected_matches", (string)null);
+                });
+
             modelBuilder.Entity("Mizan.Domain.Notifications.Notification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -321,9 +554,38 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<string>("BankStatus")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("bank_status");
+
+                    b.Property<string>("BankSubType")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("bank_sub_type");
+
+                    b.Property<decimal>("BudgetAmount")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("budget_amount")
+                        .HasComputedColumnSql("CASE\n    WHEN is_excluded OR review = 'PossibleTransfer' OR possible_duplicate_of IS NOT NULL THEN 0\n    WHEN treatment = 'Spending' THEN amount + COALESCE(fee, 0)\n    WHEN treatment = 'Refund' THEN -amount\n    ELSE 0\nEND", true);
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid")
                         .HasColumnName("category_id");
+
+                    b.Property<string>("CategorySource")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("User")
+                        .HasColumnName("category_source");
+
+                    b.Property<Guid?>("CounterpartyAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("counterparty_account_id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -333,14 +595,69 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .HasColumnType("date")
                         .HasColumnName("date");
 
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasDefaultValue("Debit")
+                        .HasColumnName("direction");
+
                     b.Property<Guid?>("GoalId")
                         .HasColumnType("uuid")
                         .HasColumnName("goal_id");
+
+                    b.Property<bool>("IsCashWithdrawal")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_cash_withdrawal");
+
+                    b.Property<bool>("IsExcluded")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_excluded");
 
                     b.Property<string>("Merchant")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("merchant");
+
+                    b.Property<string>("MerchantKey")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("merchant_key");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("note");
+
+                    b.Property<Guid?>("PossibleDuplicateOf")
+                        .HasColumnType("uuid")
+                        .HasColumnName("possible_duplicate_of");
+
+                    b.Property<string>("Review")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("review");
+
+                    b.Property<Guid?>("ReviewCandidateId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("review_candidate_id");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasDefaultValue("Manual")
+                        .HasColumnName("source");
+
+                    b.Property<string>("Treatment")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("Spending")
+                        .HasColumnName("treatment");
 
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -349,6 +666,24 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
+
+                    b.Property<Guid?>("_bankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<Guid?>("_bankConnectionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_connection_id");
+
+                    b.Property<decimal?>("_feeAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("fee");
+
+                    b.Property<string>("_providerTransactionId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("provider_transaction_id");
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Amount", "Mizan.Domain.Transactions.Transaction.Amount#Money", b1 =>
                         {
@@ -373,11 +708,21 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                     b.HasIndex("GoalId")
                         .HasDatabaseName("ix_transactions_goal_id");
 
+                    b.HasIndex("_bankAccountId")
+                        .HasDatabaseName("ix_transactions_bank_account_id");
+
                     b.HasIndex("CategoryId", "Date")
                         .HasDatabaseName("ix_transactions_category_id_date");
 
                     b.HasIndex("UserId", "Date")
                         .HasDatabaseName("ix_transactions_user_id_date");
+
+                    b.HasIndex("UserId", "MerchantKey")
+                        .HasDatabaseName("ix_transactions_user_id_merchant_key");
+
+                    b.HasIndex("_bankConnectionId", "_providerTransactionId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_transactions_bank_connection_id_provider_transaction_id");
 
                     b.ToTable("transactions", null, t =>
                         {
@@ -455,6 +800,105 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Mizan.Infrastructure.Messaging.InboxMessage", b =>
+                {
+                    b.Property<string>("EventId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("event_id");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("text")
+                        .HasColumnName("last_error");
+
+                    b.Property<DateTimeOffset>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_attempt_at");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload");
+
+                    b.Property<DateTimeOffset?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("provider");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("received_at");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("type");
+
+                    b.HasKey("EventId")
+                        .HasName("pk_webhook_inbox");
+
+                    b.HasIndex("ProcessedAt", "NextAttemptAt")
+                        .HasDatabaseName("ix_webhook_inbox_processed_at_next_attempt_at");
+
+                    b.ToTable("webhook_inbox", (string)null);
+                });
+
+            modelBuilder.Entity("Mizan.Infrastructure.Messaging.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("text")
+                        .HasColumnName("last_error");
+
+                    b.Property<DateTimeOffset>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_attempt_at");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload");
+
+                    b.Property<DateTimeOffset?>("ProcessedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.HasIndex("ProcessedAt", "NextAttemptAt")
+                        .HasDatabaseName("ix_outbox_messages_processed_at_next_attempt_at");
+
+                    b.ToTable("outbox_messages", (string)null);
+                });
+
             modelBuilder.Entity("Mizan.Application.Auth.RefreshToken", b =>
                 {
                     b.HasOne("Mizan.Domain.Users.User", null)
@@ -463,6 +907,36 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_refresh_tokens_users_user_id");
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Banking.BankAccount", b =>
+                {
+                    b.HasOne("Mizan.Domain.Banking.BankConnection", null)
+                        .WithMany("Accounts")
+                        .HasForeignKey("ConnectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_bank_accounts_bank_connections_connection_id");
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Banking.BankConnection", b =>
+                {
+                    b.HasOne("Mizan.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_bank_connections_users_user_id");
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Banking.BankingCustomer", b =>
+                {
+                    b.HasOne("Mizan.Domain.Users.User", null)
+                        .WithOne()
+                        .HasForeignKey("Mizan.Domain.Banking.BankingCustomer", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_bank_customers_users_user_id");
                 });
 
             modelBuilder.Entity("Mizan.Domain.Budgets.Budget", b =>
@@ -502,6 +976,23 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_categories_users_user_id");
                 });
 
+            modelBuilder.Entity("Mizan.Domain.Categorization.MerchantRule", b =>
+                {
+                    b.HasOne("Mizan.Domain.Categories.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_merchant_rules_categories_category_id");
+
+                    b.HasOne("Mizan.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_merchant_rules_users_user_id");
+                });
+
             modelBuilder.Entity("Mizan.Domain.Goals.Goal", b =>
                 {
                     b.HasOne("Mizan.Domain.Users.User", null)
@@ -510,6 +1001,23 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_goals_users_user_id");
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Importing.RejectedMatch", b =>
+                {
+                    b.HasOne("Mizan.Domain.Transactions.Transaction", null)
+                        .WithMany()
+                        .HasForeignKey("BankTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_rejected_matches_transactions_bank_transaction_id");
+
+                    b.HasOne("Mizan.Domain.Transactions.Transaction", null)
+                        .WithMany()
+                        .HasForeignKey("ManualTransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_rejected_matches_transactions_manual_transaction_id");
                 });
 
             modelBuilder.Entity("Mizan.Domain.Notifications.Notification", b =>
@@ -543,6 +1051,23 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_transactions_users_user_id");
+
+                    b.HasOne("Mizan.Domain.Banking.BankAccount", null)
+                        .WithMany()
+                        .HasForeignKey("_bankAccountId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_transactions_bank_account_bank_account_id");
+
+                    b.HasOne("Mizan.Domain.Banking.BankConnection", null)
+                        .WithMany()
+                        .HasForeignKey("_bankConnectionId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_transactions_bank_connections_bank_connection_id");
+                });
+
+            modelBuilder.Entity("Mizan.Domain.Banking.BankConnection", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("Mizan.Domain.Budgets.Budget", b =>

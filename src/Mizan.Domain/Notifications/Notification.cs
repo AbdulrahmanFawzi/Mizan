@@ -48,5 +48,30 @@ public sealed class Notification : AggregateRoot
             ["goalName"] = goalName,
         }, now);
 
+    // BR-C5
+    public static Notification ConsentExpiring(Guid userId, Guid connectionId, string bankName, int daysLeft, DateOnly expiresOn, DateTimeOffset now) =>
+        new(userId, NotificationType.ConsentExpiring, new Dictionary<string, string>
+        {
+            ["connectionId"] = connectionId.ToString(),
+            ["bankName"] = bankName,
+            ["daysLeft"] = daysLeft.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ["expiresOn"] = expiresOn.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+        }, now);
+
+    // BR-C6
+    public static Notification ConsentExpired(Guid userId, Guid connectionId, string bankName, DateTimeOffset now) =>
+        new(userId, NotificationType.ConsentExpired, new Dictionary<string, string>
+        {
+            ["connectionId"] = connectionId.ToString(),
+            ["bankName"] = bankName,
+        }, now);
+
+    // OB-1 and OB-3: some imported transactions need the user's decision.
+    public static Notification ReviewNeeded(Guid userId, int count, DateTimeOffset now) =>
+        new(userId, NotificationType.ReviewNeeded, new Dictionary<string, string>
+        {
+            ["count"] = count.ToString(System.Globalization.CultureInfo.InvariantCulture),
+        }, now);
+
     public void MarkAsRead(DateTimeOffset now) => ReadAt ??= now;
 }

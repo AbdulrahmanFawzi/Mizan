@@ -139,6 +139,11 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(find.textContaining('15,000'), findsOneWidget);
 
+    // The Bank accounts section (MVP 1) pushes this further down the screen.
+    // The "profile saved" message floats over the bottom of the screen; a person would wait for it.
+    tester.state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger).first).removeCurrentSnackBar();
+    await tester.ensureVisible(find.byKey(const Key('deleteAccount')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('deleteAccount')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('confirmDeleteAccount')));

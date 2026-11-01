@@ -40,6 +40,7 @@ app.MapTransactionEndpoints();
 app.MapGoalEndpoints();
 app.MapNotificationEndpoints();
 app.MapDashboardEndpoints();
+app.MapBankingEndpoints();
 
 app.Run();
 
