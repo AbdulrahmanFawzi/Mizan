@@ -800,4 +800,7 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get verifyBeforeLink =>
       'أكّد إيميلك أول. هذا يحمي حسابك قبل ربط البنك.';
+
+  @override
+  String get exportData => 'تصدير بياناتي';
 }

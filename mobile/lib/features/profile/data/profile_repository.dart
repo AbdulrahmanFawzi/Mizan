@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,6 +57,16 @@ class ProfileRepository {
   Future<void> sendVerificationCode() => apiCall(() => _dio.post<void>('/api/me/email/send-code'));
 
   Future<void> verifyEmail(String code) => apiCall(() => _dio.post<void>('/api/me/email/verify', data: {'code': code}));
+
+  // UC-09: the whole account as one JSON file, named by the API.
+  Future<(Uint8List bytes, String fileName)> exportData() async {
+    final response = await apiCall(
+      () => _dio.get<List<int>>('/api/me/export', options: Options(responseType: ResponseType.bytes)),
+    );
+    final disposition = response.headers.value('content-disposition') ?? '';
+    final fileName = RegExp(r'filename="?([^";]+)').firstMatch(disposition)?.group(1) ?? 'halalati-data.json';
+    return (Uint8List.fromList(response.data!), fileName);
+  }
 
   // UC-06 / BR-U3: the API deletes the user and all their financial data.
   Future<void> deleteAccount() => apiCall(() => _dio.delete<void>('/api/me'));

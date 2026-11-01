@@ -11,6 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
 import '../profile/data/profile_repository.dart';
 import 'locale_controller.dart';
+import 'profile_actions.dart';
 import 'theme_mode_controller.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -125,6 +126,21 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const Divider(indent: 68),
               ],
+              _SettingsRow(
+                key: const Key('exportData'),
+                icon: Icons.download_rounded,
+                color: colors.mintOnLight,
+                label: l10n.exportData,
+                onTap: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  try {
+                    await ref.read(profileActionsProvider).exportData();
+                  } catch (error) {
+                    messenger.showSnackBar(SnackBar(content: Text(errorMessage(error, l10n))));
+                  }
+                },
+              ),
+              const Divider(indent: 68),
               _SettingsRow(
                 key: const Key('logout'),
                 icon: Icons.logout_rounded,

@@ -466,5 +466,6 @@
   "resetCodeSent": "If this email has an account, a 6-digit code is on its way. It works for 15 minutes.",
   "newPassword": "New password",
   "backToLogin": "Back to login",
-  "verifyBeforeLink": "Confirm your email first. It protects your account before linking a bank."
+  "verifyBeforeLink": "Confirm your email first. It protects your account before linking a bank.",
+  "exportData": "Export my data"
 }

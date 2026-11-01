@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<AuthService>();
         services.AddScoped<EmailCodes>();
         services.AddScoped<ProfileService>();
+        services.AddScoped<DataExportService>();
         services.AddScoped<CategoryService>();
         services.AddScoped<BudgetService>();
         services.AddScoped<TransactionService>();

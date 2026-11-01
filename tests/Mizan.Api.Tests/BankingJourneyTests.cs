@@ -7,6 +7,7 @@ using Mizan.Application.Budgets;
 using Mizan.Application.Categories;
 using Mizan.Application.Common;
 using Mizan.Application.Notifications;
+using Mizan.Application.Profile;
 using Mizan.Application.Transactions;
 using Mizan.Domain.Banking;
 using Mizan.Domain.Categories;
@@ -360,6 +361,29 @@ public sealed class BankingJourneyTests(MizanApiFactory factory)
         await factory.Services.GetRequiredService<BankingJobRunner>().ProcessInboxAsync(CancellationToken.None);
 
         Assert.Single(await TransactionsAsync(api));
+    }
+
+    [Fact]
+    public async Task Export_HasAllTheUsersData_WithIbansMasked()
+    {
+        var (api, customer) = await StartAsync(factory);
+        Bank.Link(customer, [(Account("cur", iban: MyCurrent), [Debit("t1", 90, Today, "Tamimi")])]);
+        await DiscoverAsync(api);
+        await api.PostAsync<TransactionDto>("/api/transactions", new { amount = 25, categoryId = (await CategoryAsync(api, "أخرى")).CategoryId, date = Today });
+
+        var response = await api.Http.GetAsync("/api/me/export");
+        response.EnsureSuccessStatusCode();
+        Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
+        Assert.StartsWith("halalati-data-", response.Content.Headers.ContentDisposition?.FileName?.Trim('"'));
+
+        var text = await response.Content.ReadAsStringAsync();
+        Assert.DoesNotContain(MyCurrent, text);
+        var export = System.Text.Json.JsonSerializer.Deserialize<DataExportDto>(text, ApiClient.Json)!;
+        Assert.Equal(api.Email, export.Profile.Email);
+        Assert.Equal(2, export.Transactions.Count);
+        Assert.NotEmpty(export.Categories);
+        Assert.NotEmpty(export.Budgets);
+        Assert.EndsWith("0001", Assert.Single(Assert.Single(export.BankConnections).Accounts).IbanMasked);
     }
 
     [Fact]

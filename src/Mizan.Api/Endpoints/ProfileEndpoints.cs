@@ -1,4 +1,7 @@
 using System.Security.Claims;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.Options;
 using Mizan.Api.Infrastructure;
 using Mizan.Application.Auth;
 using Mizan.Application.Profile;
@@ -16,6 +19,14 @@ internal static class ProfileEndpoints
 
         group.MapPut("/", async (UpdateProfileCommand command, ClaimsPrincipal user, ProfileService profile, CancellationToken ct) =>
             TypedResults.Ok(await profile.UpdateAsync(user.GetUserId(), command, ct)));
+
+        // UC-09: downloaded as a file, named with the date.
+        group.MapGet("/export", async (ClaimsPrincipal user, DataExportService export, IOptions<JsonOptions> json, CancellationToken ct) =>
+        {
+            var data = await export.ExportAsync(user.GetUserId(), ct);
+            var bytes = JsonSerializer.SerializeToUtf8Bytes(data, new JsonSerializerOptions(json.Value.SerializerOptions) { WriteIndented = true });
+            return TypedResults.File(bytes, "application/json", $"halalati-data-{data.ExportedAt:yyyy-MM-dd}.json");
+        });
 
         group.MapPost("/email/send-code", async (ClaimsPrincipal user, AuthService auth, CancellationToken ct) =>
         {

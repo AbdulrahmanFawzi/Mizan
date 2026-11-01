@@ -1465,6 +1465,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm your email first. It protects your account before linking a bank.'**
   String get verifyBeforeLink;
+
+  /// No description provided for @exportData.
+  ///
+  /// In en, this message translates to:
+  /// **'Export my data'**
+  String get exportData;
 }
 
 class _AppLocalizationsDelegate

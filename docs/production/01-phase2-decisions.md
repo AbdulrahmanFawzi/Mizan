@@ -13,3 +13,11 @@
 
 API: `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`, `POST /api/me/email/send-code`,
 `POST /api/me/email/verify`; `GET /api/me` has `emailVerified`.
+
+## Data export (UC-09, PDPL right of access)
+
+| ID | Decision |
+|---|---|
+| P2-7 | Settings → "Export my data" downloads one JSON file (`GET /api/me/export`, named `halalati-data-<date>.json`) and opens the phone's share sheet. |
+| P2-8 | It holds everything we keep: profile, categories, budgets, all transactions, goals, notifications, bank connections and accounts, merchant rules. IBANs stay masked. |
+| P2-9 | JSON, not PDF or CSV: complete and machine-readable (portability). A readable report can come later if users ask. |
