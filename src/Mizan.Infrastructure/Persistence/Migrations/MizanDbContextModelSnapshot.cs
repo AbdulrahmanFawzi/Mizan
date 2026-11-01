@@ -111,6 +111,10 @@ namespace Mizan.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("provider_account_id");
 
+                    b.Property<bool?>("TransfersInAreSpending")
+                        .HasColumnType("boolean")
+                        .HasColumnName("transfers_in_are_spending");
+
                     b.Property<decimal?>("_balanceAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)")

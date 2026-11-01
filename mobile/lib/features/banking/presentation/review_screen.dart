@@ -59,13 +59,14 @@ class ReviewCard extends ConsumerStatefulWidget {
 
 class _ReviewCardState extends ConsumerState<ReviewCard> {
   bool _busy = false;
+  bool _remember = false;
 
   Future<void> _decide(ReviewDecision decision) async {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      await ref.read(bankingActionsProvider).resolve(widget.item.transaction.id, decision);
+      await ref.read(bankingActionsProvider).resolve(widget.item.transaction.id, decision, remember: _remember);
     } catch (error) {
       messenger.showSnackBar(SnackBar(content: Text(errorMessage(error, l10n))));
       if (mounted) setState(() => _busy = false);
@@ -100,6 +101,17 @@ class _ReviewCardState extends ConsumerState<ReviewCard> {
           if (item.candidate case final candidate?) _Line(label: l10n.youRecorded, transaction: candidate),
           const SizedBox(height: 6),
           Text(isDuplicate ? l10n.duplicateExplain : l10n.transferExplain, style: TextStyle(color: colors.textMuted, fontSize: 12)),
+          // BR-R6: answer once for every transfer into this account.
+          if (!isDuplicate && item.transferTo != null)
+            CheckboxListTile(
+              key: Key('remember-${item.transaction.id}'),
+              value: _remember,
+              onChanged: _busy ? null : (value) => setState(() => _remember = value ?? false),
+              title: Text(l10n.rememberTransfer(item.transferTo!), style: const TextStyle(fontSize: 13)),
+              controlAffinity: ListTileControlAffinity.leading,
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+            ),
           const SizedBox(height: 14),
           Row(children: [
             Expanded(

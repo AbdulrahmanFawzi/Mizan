@@ -28,7 +28,8 @@ internal sealed class LeanBankingProvider(HttpClient http, LeanTokenCache tokens
 
         if (response.IsSuccessStatusCode)
         {
-            return (await ReadAsync(response, cancellationToken))["customer_id"]!.GetValue<string>();
+            return (await ReadAsync(response, cancellationToken))?["customer_id"]?.GetValue<string>()
+                ?? throw new BankingProviderException("Lean created a customer but returned no customer_id.");
         }
 
         // app_user_id is unique at Lean: if an earlier attempt created it, fetch it instead.

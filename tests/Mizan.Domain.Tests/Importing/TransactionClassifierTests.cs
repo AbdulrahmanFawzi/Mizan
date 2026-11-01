@@ -57,6 +57,14 @@ public class TransactionClassifierTests
         Assert.Equal(new Classification(Treatment.Spending, ReviewReason.PossibleTransfer), Classify(counterparty: MyCard));
     }
 
+    [Theory]
+    [InlineData(false, Treatment.OwnTransfer)]
+    [InlineData(true, Treatment.Spending)]
+    public void PaymentToMyOwnCard_UsesTheRememberedAnswer(bool areSpending, Treatment expected)
+    {
+        Assert.Equal(new Classification(expected, null), Classify(counterparty: MyCard with { TransfersInAreSpending = areSpending }));
+    }
+
     [Fact]
     public void MoneyArrivingFromMyOwnCard_IsOwnTransfer_WithNoQuestion()
     {

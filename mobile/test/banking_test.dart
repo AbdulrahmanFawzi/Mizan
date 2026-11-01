@@ -47,7 +47,8 @@ class FakeBankingActions implements BankingActions {
   Future<void> setAccountIncluded(String accountId, bool include) async => calls.add('include $accountId $include');
 
   @override
-  Future<void> resolve(String transactionId, ReviewDecision decision) async => calls.add('resolve $transactionId ${decision.name}');
+  Future<void> resolve(String transactionId, ReviewDecision decision, {bool remember = false}) async =>
+      calls.add('resolve $transactionId ${decision.name}${remember ? ' remember' : ''}');
 
   @override
   Future<void> changeCategory(String transactionId, String categoryId, {required bool rememberMerchant}) async =>
@@ -249,6 +250,18 @@ void main() {
       await tester.tap(find.byKey(const Key('no-t1')));
       await tester.pump();
       expect(actions.calls, ['resolve t1 spending']);
+    });
+
+    testWidgets('a transfer answer can be remembered for the account', (tester) async {
+      final bank = Transaction.fromJson(_bankJson(review: 'PossibleTransfer', effect: 0));
+      await pump(tester, [ReviewItem(transaction: bank, reason: ReviewReason.possibleTransfer, candidate: null, transferTo: 'My card')]);
+
+      expect(find.text('Remember my answer for every transfer to “My card”'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('remember-t1')));
+      await tester.pump();
+      await tester.tap(find.byKey(const Key('yes-t1')));
+      await tester.pump();
+      expect(actions.calls, ['resolve t1 ownTransfer remember']);
     });
 
     testWidgets('nothing to review says so', (tester) async {

@@ -647,6 +647,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Transfers and card payments aren\'t spending, so they don\'t count until you say so.';
 
   @override
+  String rememberTransfer(String account) {
+    return 'Remember my answer for every transfer to “$account”';
+  }
+
+  @override
   String get sameAsManual => 'Same purchase';
 
   @override

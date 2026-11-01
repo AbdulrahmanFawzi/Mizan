@@ -48,8 +48,8 @@ class BankingActions {
     _refreshAll();
   }
 
-  Future<void> resolve(String transactionId, ReviewDecision decision) async {
-    await _repository.resolve(transactionId, decision);
+  Future<void> resolve(String transactionId, ReviewDecision decision, {bool remember = false}) async {
+    await _repository.resolve(transactionId, decision, remember: remember);
     _refreshAll();
   }
 

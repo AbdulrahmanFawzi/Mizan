@@ -125,6 +125,14 @@ public sealed class BankConnection : AggregateRoot
         account.SetIncludeInBudget(include, budgetCurrency);
     }
 
+    public void RememberTransfersIn(Guid accountId, bool areSpending)
+    {
+        var account = _accounts.SingleOrDefault(a => a.Id == accountId)
+            ?? throw new DomainException("Account not found in this connection.");
+
+        account.RememberTransfersIn(areSpending);
+    }
+
     // `complete` is false when some accounts failed or the first import came back empty:
     // the window then doesn't move forward, so the next sync fetches the same dates again.
     public void RecordSync(DateTimeOffset now, IReadOnlyList<AffectedSpending> affected, int newReviewItems, bool complete = true)

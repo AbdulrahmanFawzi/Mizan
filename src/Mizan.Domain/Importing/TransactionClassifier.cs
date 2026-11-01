@@ -11,7 +11,11 @@ public sealed record Classification(Treatment Treatment, ReviewReason? Review, b
 public sealed record AccountContext(bool IncludeInBudget, Currency Currency);
 
 // The other side of the transaction, when it is one of the user's own linked accounts.
-public sealed record CounterpartyAccount(Guid AccountId, AccountKind Kind);
+// TransfersInAreSpending: the user's remembered answer for transfers into it (BR-R6), null = ask.
+public sealed record CounterpartyAccount(Guid AccountId, AccountKind Kind, bool? TransfersInAreSpending = null)
+{
+    public static CounterpartyAccount Of(BankAccount account) => new(account.Id, account.Kind, account.TransfersInAreSpending);
+}
 
 // Decides how a bank transaction affects the budget. Pure: no database, no network.
 // It only uses facts we keep on the transaction, so it can run again later (BR-X13).
@@ -59,10 +63,15 @@ public static class TransactionClassifier
             return new Classification(Treatment.Spending, null, IsSaving: true);
         }
 
-        // OB-3 (BR-R3): ask the user each time. Card payments land here too (BR-R2).
+        // OB-3 (BR-R3): ask the user, unless they asked us to remember (BR-R6). Card payments land here too (BR-R2).
         if (counterparty is not null)
         {
-            return new Classification(Treatment.Spending, ReviewReason.PossibleTransfer);
+            return counterparty.TransfersInAreSpending switch
+            {
+                true => new Classification(Treatment.Spending, null),
+                false => new Classification(Treatment.OwnTransfer, null),
+                null => new Classification(Treatment.Spending, ReviewReason.PossibleTransfer),
+            };
         }
 
         // BR-R5 and BR-X12: transfers to other people and ATM withdrawals are spending.

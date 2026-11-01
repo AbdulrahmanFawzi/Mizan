@@ -109,6 +109,31 @@ public sealed class BankingJourneyTests(MizanApiFactory factory)
     }
 
     [Fact]
+    public async Task RememberedTransferAnswer_AnswersTheWaitingOnes_AndFutureImports()
+    {
+        var (api, customer) = await StartAsync(factory);
+        Bank.Link(customer, [(Account("cur", iban: MyCurrent), [Debit("t1", 700, Today, "Transfer", counterpartyIban: MyCard),
+                                                                Debit("t2", 400, Today, "Transfer", counterpartyIban: MyCard)]),
+                             (Account("card", AccountKind.CreditCard, MyCard), [])]);
+        var connection = Assert.Single(await DiscoverAsync(api));
+
+        var review = await api.GetAsync<List<ReviewItemDto>>("/api/transactions/review");
+        Assert.Equal(2, review.Count);
+        Assert.All(review, r => Assert.Equal("CreditCard account", r.TransferTo));
+
+        // BR-R6: one answer with "remember" clears both questions.
+        await api.PostAsync<TransactionDto>($"/api/transactions/{review[0].Transaction.Id}/review", new { decision = "OwnTransfer", remember = true });
+        Assert.Empty(await api.GetAsync<List<ReviewItemDto>>("/api/transactions/review"));
+
+        Bank.For(customer).Transactions["cur"].Add(Debit("t3", 250, Today, "Transfer", counterpartyIban: MyCard));
+        await api.PostAsync<SyncResultDto>($"/api/bank-connections/{connection.Id}/sync", new { });
+
+        Assert.Empty(await api.GetAsync<List<ReviewItemDto>>("/api/transactions/review"));
+        Assert.All(await TransactionsAsync(api), t => Assert.Equal("OwnTransfer", t.Treatment));
+        Assert.Equal(0m, (await CategoryAsync(api, "أخرى")).Spent.Amount);
+    }
+
+    [Fact]
     public async Task MovingMoneyIntoSavings_CountsAsSaving_AndTakingItOutLowersIt()
     {
         var (api, customer) = await StartAsync(factory);

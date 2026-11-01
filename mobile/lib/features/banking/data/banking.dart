@@ -112,12 +112,13 @@ class LinkSession {
 }
 
 class ReviewItem {
-  const ReviewItem({required this.transaction, required this.reason, required this.candidate});
+  const ReviewItem({required this.transaction, required this.reason, required this.candidate, this.transferTo});
 
   factory ReviewItem.fromJson(Map<String, dynamic> json) => ReviewItem(
         transaction: Transaction.fromJson(json['transaction'] as Map<String, dynamic>),
         reason: json['reason'] == 'PossibleDuplicate' ? ReviewReason.possibleDuplicate : ReviewReason.possibleTransfer,
         candidate: json['candidate'] == null ? null : Transaction.fromJson(json['candidate'] as Map<String, dynamic>),
+        transferTo: json['transferTo'] as String?,
       );
 
   final Transaction transaction;
@@ -125,6 +126,9 @@ class ReviewItem {
 
   // For a possible duplicate: the manual expense it may repeat.
   final Transaction? candidate;
+
+  // For a possible transfer: the name of the user's own account the money went to.
+  final String? transferTo;
 }
 
 enum ReviewDecision { sameAsManual, notDuplicate, ownTransfer, spending }
@@ -166,7 +170,7 @@ class BankingRepository {
     return listOf(response.data, ReviewItem.fromJson);
   }
 
-  Future<void> resolve(String transactionId, ReviewDecision decision) => apiCall(() => _dio.post<void>(
+  Future<void> resolve(String transactionId, ReviewDecision decision, {bool remember = false}) => apiCall(() => _dio.post<void>(
         '/api/transactions/$transactionId/review',
         data: {
           'decision': switch (decision) {
@@ -175,6 +179,7 @@ class BankingRepository {
             ReviewDecision.ownTransfer => 'OwnTransfer',
             ReviewDecision.spending => 'Spending',
           },
+          'remember': remember,
         },
       ));
 

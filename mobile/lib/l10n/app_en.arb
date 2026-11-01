@@ -363,6 +363,14 @@
   "duplicateExplain": "Until you answer, it's counted once.",
   "transferQuestion": "Is this a transfer between your own accounts?",
   "transferExplain": "Transfers and card payments aren't spending, so they don't count until you say so.",
+  "rememberTransfer": "Remember my answer for every transfer to “{account}”",
+  "@rememberTransfer": {
+    "placeholders": {
+      "account": {
+        "type": "String"
+      }
+    }
+  },
   "sameAsManual": "Same purchase",
   "notDuplicate": "Different",
   "ownTransfer": "Yes, a transfer",

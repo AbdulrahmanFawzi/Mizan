@@ -647,6 +647,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'التحويلات وسداد البطاقة مو صرف، فما تنحسب لين تقول.';
 
   @override
+  String rememberTransfer(String account) {
+    return 'تذكّر جوابي لكل التحويلات إلى «$account»';
+  }
+
+  @override
   String get sameAsManual => 'نفس العملية';
 
   @override

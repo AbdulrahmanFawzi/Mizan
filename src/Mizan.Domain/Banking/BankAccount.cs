@@ -27,6 +27,10 @@ public sealed class BankAccount
     public bool IncludeInBudget { get; private set; }
     public DateTimeOffset? BalanceAsOf { get; private set; }
 
+    // BR-R6: the user's remembered answer for money moved into this account from another of theirs.
+    // null = ask each time (OB-3), true = it is spending, false = a transfer that doesn't count.
+    public bool? TransfersInAreSpending { get; private set; }
+
     // Stored as one number in the account's own currency.
     private decimal? _balanceAmount;
 
@@ -67,6 +71,8 @@ public sealed class BankAccount
             BalanceAsOf = snapshot.BalanceAsOf ?? BalanceAsOf;
         }
     }
+
+    internal void RememberTransfersIn(bool areSpending) => TransfersInAreSpending = areSpending;
 
     internal void SetIncludeInBudget(bool include, Currency budgetCurrency)
     {

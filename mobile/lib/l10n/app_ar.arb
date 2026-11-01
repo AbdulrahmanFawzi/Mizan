@@ -183,6 +183,7 @@
   "duplicateExplain": "لين تجاوب، تنحسب مرة وحدة.",
   "transferQuestion": "هذا تحويل بين حساباتك؟",
   "transferExplain": "التحويلات وسداد البطاقة مو صرف، فما تنحسب لين تقول.",
+  "rememberTransfer": "تذكّر جوابي لكل التحويلات إلى «{account}»",
   "sameAsManual": "نفس العملية",
   "notDuplicate": "عملية مختلفة",
   "ownTransfer": "نعم، تحويل",

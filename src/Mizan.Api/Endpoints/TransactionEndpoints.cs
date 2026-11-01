@@ -4,7 +4,7 @@ using Mizan.Application.Transactions;
 
 namespace Mizan.Api.Endpoints;
 
-public sealed record ResolveReviewRequest(ReviewDecision Decision);
+public sealed record ResolveReviewRequest(ReviewDecision Decision, bool Remember = false);
 
 internal static class TransactionEndpoints
 {
@@ -43,7 +43,7 @@ internal static class TransactionEndpoints
             TypedResults.Ok(await review.ListAsync(user.GetUserId(), ct)));
 
         group.MapPost("/{id:guid}/review", async (Guid id, ResolveReviewRequest request, ClaimsPrincipal user, ReviewService review, CancellationToken ct) =>
-            TypedResults.Ok(await review.ResolveAsync(user.GetUserId(), id, request.Decision, ct)));
+            TypedResults.Ok(await review.ResolveAsync(user.GetUserId(), id, request.Decision, ct, request.Remember)));
 
         // UC-91 (works for manual and bank transactions).
         group.MapPut("/{id:guid}/category", async (Guid id, ChangeCategoryCommand command, ClaimsPrincipal user, ReviewService review, CancellationToken ct) =>

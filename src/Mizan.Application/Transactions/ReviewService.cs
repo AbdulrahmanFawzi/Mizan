@@ -16,7 +16,8 @@ public enum ReviewDecision
     Spending,       // OB-3: it was real spending
 }
 
-public sealed record ReviewItemDto(TransactionDto Transaction, string Reason, TransactionDto? Candidate);
+// TransferTo: the name of the user's own account a possible transfer went to.
+public sealed record ReviewItemDto(TransactionDto Transaction, string Reason, TransactionDto? Candidate, string? TransferTo = null);
 
 public sealed record ChangeCategoryCommand(Guid CategoryId, bool RememberMerchant = false);
 
@@ -32,12 +33,17 @@ public sealed class ReviewService(
     IBankTransactionRepository bankTransactions,
     IMerchantRuleRepository merchantRules,
     IRejectedMatchRepository rejectedMatches,
+    IBankConnectionRepository connections,
     IBudgetRepository budgets,
     IUnitOfWork unitOfWork,
     Clock clock)
 {
     public async Task<IReadOnlyList<ReviewItemDto>> ListAsync(Guid userId, CancellationToken cancellationToken)
     {
+        var accountNames = (await connections.ListAsync(userId, cancellationToken))
+            .SelectMany(c => c.Accounts)
+            .ToDictionary(a => a.Id, a => a.Nickname);
+
         var items = new List<ReviewItemDto>();
         foreach (var transaction in await bankTransactions.ListNeedingReviewAsync(userId, cancellationToken))
         {
@@ -48,13 +54,16 @@ public sealed class ReviewService(
             items.Add(new ReviewItemDto(
                 TransactionService.ToDto(transaction),
                 transaction.Review!.Value.ToString(),
-                candidate is null ? null : TransactionService.ToDto(candidate)));
+                candidate is null ? null : TransactionService.ToDto(candidate),
+                transaction.CounterpartyAccountId is { } to ? accountNames.GetValueOrDefault(to) : null));
         }
 
         return items;
     }
 
-    public async Task<TransactionDto> ResolveAsync(Guid userId, Guid transactionId, ReviewDecision decision, CancellationToken cancellationToken)
+    // remember (BR-R6, transfers only): keep the answer for every transfer into the same account.
+    public async Task<TransactionDto> ResolveAsync(
+        Guid userId, Guid transactionId, ReviewDecision decision, CancellationToken cancellationToken, bool remember = false)
     {
         var transaction = await GetAsync(userId, transactionId, cancellationToken);
 
@@ -85,6 +94,11 @@ public sealed class ReviewService(
 
             case ReviewDecision.OwnTransfer or ReviewDecision.Spending:
                 transaction.ResolveTransfer(decision == ReviewDecision.OwnTransfer, clock.Now);
+                if (remember)
+                {
+                    await RememberTransferAsync(userId, transaction, decision == ReviewDecision.Spending, cancellationToken);
+                }
+
                 break;
         }
 
@@ -141,6 +155,27 @@ public sealed class ReviewService(
         transaction.SetNote(note, clock.Now);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return TransactionService.ToDto(transaction);
+    }
+
+    // BR-R6: future imports use the answer, and the questions already waiting for the same account are answered now.
+    private async Task RememberTransferAsync(Guid userId, Transaction transaction, bool isSpending, CancellationToken cancellationToken)
+    {
+        if (transaction.CounterpartyAccountId is not { } target)
+        {
+            throw new ValidationException("This transfer has no account to remember.");
+        }
+
+        var connection = (await connections.ListAsync(userId, cancellationToken))
+            .SingleOrDefault(c => c.Accounts.Any(a => a.Id == target))
+            ?? throw new NotFoundException("Bank account");
+        connection.RememberTransfersIn(target, isSpending);
+
+        var waiting = (await bankTransactions.ListNeedingReviewAsync(userId, cancellationToken))
+            .Where(t => t.Id != transaction.Id && t.Review == ReviewReason.PossibleTransfer && t.CounterpartyAccountId == target);
+        foreach (var other in waiting)
+        {
+            other.ResolveTransfer(!isSpending, clock.Now);
+        }
     }
 
     private async Task RememberMerchantAsync(Guid userId, Transaction transaction, Guid categoryId, CancellationToken cancellationToken)

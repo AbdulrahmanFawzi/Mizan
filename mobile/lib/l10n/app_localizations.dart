@@ -1196,6 +1196,12 @@ abstract class AppLocalizations {
   /// **'Transfers and card payments aren\'t spending, so they don\'t count until you say so.'**
   String get transferExplain;
 
+  /// No description provided for @rememberTransfer.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember my answer for every transfer to “{account}”'**
+  String rememberTransfer(String account);
+
   /// No description provided for @sameAsManual.
   ///
   /// In en, this message translates to:

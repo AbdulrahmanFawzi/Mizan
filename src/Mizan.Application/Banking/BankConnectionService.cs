@@ -172,13 +172,13 @@ public sealed class BankConnectionService(
         connection.SetAccountIncluded(accountId, include, user.Currency);
 
         var account = connection.Accounts.Single(a => a.Id == accountId);
-        var kinds = all.SelectMany(c => c.Accounts).ToDictionary(a => a.Id, a => a.Kind);
+        var own = all.SelectMany(c => c.Accounts).ToDictionary(a => a.Id, CounterpartyAccount.Of);
         var savings = await categories.GetSystemAsync(userId, CategoryKind.Savings, cancellationToken);
 
         foreach (var transaction in await bankTransactions.ListByAccountAsync(accountId, cancellationToken))
         {
             var counterparty = transaction.CounterpartyAccountId is { } other
-                ? new CounterpartyAccount(other, kinds.GetValueOrDefault(other, AccountKind.Other))
+                ? own.GetValueOrDefault(other) ?? new CounterpartyAccount(other, AccountKind.Other)
                 : null;
 
             var classification = TransactionClassifier.Classify(

@@ -76,8 +76,8 @@ public sealed class BankImportService(
         var context = new ImportContext(
             categoryChoices,
             await merchantRules.ListAsync(user.Id, cancellationToken),
-            ownAccounts.Where(a => a.Iban is not null).ToDictionary(a => a.Iban!, a => new CounterpartyAccount(a.Id, a.Kind)),
-            ownAccounts.ToDictionary(a => a.Id, a => a.Kind),
+            ownAccounts.Where(a => a.Iban is not null).ToDictionary(a => a.Iban!, CounterpartyAccount.Of),
+            ownAccounts.ToDictionary(a => a.Id, CounterpartyAccount.Of),
             categoryChoices.Single(c => c.Kind == Domain.Categories.CategoryKind.Savings).Id,
             user.Currency);
 
@@ -263,7 +263,7 @@ public sealed class BankImportService(
         foreach (var transaction in outgoing.Where(t => transfers.ContainsKey(t.Id)))
         {
             var target = transfers[transaction.Id];
-            var counterparty = new CounterpartyAccount(target, context.AccountKinds.GetValueOrDefault(target, AccountKind.Other));
+            var counterparty = context.AccountsById.GetValueOrDefault(target) ?? new CounterpartyAccount(target, AccountKind.Other);
             var classification = TransactionClassifier.Classify(
                 transaction.Direction, transaction.BankSubType ?? BankSubType.None, transaction.Amount.Currency,
                 new AccountContext(true, context.BudgetCurrency), counterparty, context.BudgetCurrency);
@@ -370,7 +370,7 @@ public sealed class BankImportService(
         IReadOnlyList<CategoryChoice> Categories,
         IReadOnlyDictionary<MerchantKey, Guid> Rules,
         IReadOnlyDictionary<Iban, CounterpartyAccount> OwnAccounts,
-        IReadOnlyDictionary<Guid, AccountKind> AccountKinds,
+        IReadOnlyDictionary<Guid, CounterpartyAccount> AccountsById,
         Guid SavingsCategoryId,
         Currency BudgetCurrency);
 }
