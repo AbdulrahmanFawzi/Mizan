@@ -152,10 +152,10 @@ internal sealed class LeanBankingProvider(HttpClient http, LeanTokenCache tokens
         var granted = Date(consent, "creation_date_time") ?? clock.Now;
         var active = Str(consent, "consent_status") == "ACTIVE";
 
-        // The link screen promises the user access until transaction_to_date_time (12 months).
-        // expiration_date_time came back as only 24 hours in the sandbox; see the findings doc (open question).
+        // expiration_date_time is when the bank stops sharing (the sandbox revoked it after 24 hours, as stated).
+        // transaction_to_date_time is only the end of the data range, not the access period.
         var expires = active
-            ? Date(consent, "transaction_to_date_time") ?? Date(consent, "expiration_date_time") ?? granted.AddMonths(_options.ConsentMonths)
+            ? Date(consent, "expiration_date_time") ?? granted.AddMonths(_options.ConsentMonths)
             : Date(consent, "status_update_date_time") ?? clock.Now;
 
         return new ProviderEntity(
@@ -316,8 +316,10 @@ internal sealed class LeanBankingProvider(HttpClient http, LeanTokenCache tokens
     {
         var body = await ReadAsync(response, cancellationToken);
 
-        // "CONSENT_EXPIRED" comes back in the status field, sometimes with a 4xx (BR-C6).
-        if (Str(body, "status") is { } status && status.Contains("CONSENT", StringComparison.OrdinalIgnoreCase))
+        // BR-C6: an expired or revoked consent comes back in the status field with a 4xx,
+        // as "CONSENT_EXPIRED" or (seen in the sandbox after expiry) "USER_PERMISSIONS_NOT_GRANTED".
+        if (Str(body, "status") is { } status
+            && (status.Contains("CONSENT", StringComparison.OrdinalIgnoreCase) || status == "USER_PERMISSIONS_NOT_GRANTED"))
         {
             throw new ConsentExpiredException();
         }
