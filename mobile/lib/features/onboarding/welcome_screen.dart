@@ -47,7 +47,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 8, 12, 0),
+            padding: const EdgeInsetsDirectional.fromSTEB(24, 8, 12, 0),
             child: Row(children: [
               Text(l10n.stepOf(_step + 1, _steps), style: TextStyle(color: colors.textMuted)),
               const Spacer(),
@@ -236,7 +236,7 @@ class _StarterBudgetState extends ConsumerState<_StarterBudget> {
                 ),
               const Divider(),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 2, 8, 6),
+                padding: const EdgeInsetsDirectional.fromSTEB(20, 2, 8, 6),
                 child: Row(children: [
                   Icon(Icons.savings_rounded, color: colors.mintOnLight),
                   const SizedBox(width: 12),
