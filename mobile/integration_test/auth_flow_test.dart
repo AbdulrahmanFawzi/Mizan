@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mizan/features/notifications/presentation/notifications_screen.dart';
 import 'package:mizan/features/transactions/presentation/widgets/transaction_tile.dart';
@@ -29,6 +30,7 @@ void main() {
 
   testWidgets('the whole MVP 0 journey, from sign-up to account deletion', (tester) async {
     await const FlutterSecureStorage().deleteAll();
+    await (await SharedPreferences.getInstance()).clear(); // language, theme and setup state from earlier runs
     final email = 'it-${DateTime.now().millisecondsSinceEpoch}@example.com';
 
     app.main();
