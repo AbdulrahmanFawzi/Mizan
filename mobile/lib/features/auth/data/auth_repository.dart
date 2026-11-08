@@ -41,6 +41,16 @@ class AuthRepository {
 
   Future<void> register(RegisterRequest request) => _authenticate('/api/auth/register', request.toJson());
 
+  // UC-05: the API answers the same whether or not the email has an account.
+  Future<void> forgotPassword(String email) =>
+      apiCall(() => _dio.post<void>('/api/auth/forgot-password', data: {'email': email}));
+
+  // A successful reset logs the user in.
+  Future<void> resetPassword({required String email, required String code, required String newPassword}) => _authenticate(
+        '/api/auth/reset-password',
+        {'email': email, 'code': code, 'newPassword': newPassword},
+      );
+
   Future<void> logout() async {
     final tokens = await _storage.read();
     await _storage.clear();

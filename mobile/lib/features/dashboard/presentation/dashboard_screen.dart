@@ -7,6 +7,8 @@ import '../../../core/router/app_router.dart';
 import '../../../core/theme/mizan_colors.dart';
 import '../../../core/widgets/ui.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../banking/data/banking.dart';
+import '../../banking/presentation/review_screen.dart';
 import '../../budget/data/budget_repository.dart';
 import '../../goals/data/goal.dart';
 import '../../profile/data/profile_repository.dart';
@@ -34,6 +36,7 @@ class DashboardScreen extends ConsumerWidget {
           AsyncData(:final value) => RefreshIndicator(
               onRefresh: () {
                 ref.invalidate(budgetProvider);
+                ref.invalidate(reviewItemsProvider);
                 return ref.refresh(dashboardProvider.future);
               },
               child: ListView(
@@ -43,6 +46,8 @@ class DashboardScreen extends ConsumerWidget {
                   _Header(name: name, unread: value.unreadNotifications),
                   const SizedBox(height: 20),
                   HeroCard(dashboard: value),
+                  const SizedBox(height: 16),
+                  ReviewBanner(onOpen: () => context.push(Routes.review)),
                   if (value.insights.isNotEmpty) ...[
                     SectionHeader(l10n.insights),
                     for (final insight in value.insights)

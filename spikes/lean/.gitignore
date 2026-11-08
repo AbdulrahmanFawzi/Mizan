@@ -1,0 +1,4 @@
+# Lean keys and everything fetched from the sandbox stay on this machine.
+.env
+out/
+link.html

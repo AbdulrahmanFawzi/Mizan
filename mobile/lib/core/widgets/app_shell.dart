@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/banking/application/banking_actions.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../router/app_router.dart';
@@ -7,10 +10,40 @@ import '../theme/mizan_colors.dart';
 
 // A floating ink tab bar with the "add expense" button in the middle, where the thumb rests.
 // IndexedStack (from StatefulShellRoute) keeps each tab's scroll position when switching.
-class AppShell extends StatelessWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key, required this.shell});
 
   final StatefulNavigationShell shell;
+
+  @override
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+// OB-6: bank data refreshes when the app opens and whenever it comes back to the front.
+class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver {
+  StatefulNavigationShell get shell => widget.shell;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncBanks());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _syncBanks();
+  }
+
+  void _syncBanks() {
+    if (mounted) ref.read(bankingActionsProvider).syncInBackground();
+  }
 
   @override
   Widget build(BuildContext context) {

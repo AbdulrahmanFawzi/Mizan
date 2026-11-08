@@ -36,6 +36,10 @@ class NotificationsScreen extends ConsumerWidget {
         context.go(Routes.budget);
       case NotificationType.goalCompleted when notification.data['goalId'] != null:
         context.pushReplacement(Routes.goal(notification.data['goalId']!));
+      case NotificationType.consentExpiring || NotificationType.consentExpired:
+        context.pushReplacement(Routes.banks);
+      case NotificationType.reviewNeeded:
+        context.pushReplacement(Routes.review);
       default:
         break;
     }

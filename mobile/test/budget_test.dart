@@ -23,6 +23,15 @@ class FakeBudgetActions implements BudgetActions {
 
   @override
   Future<void> deleteCategory(String categoryId) async => deleted.add(categoryId);
+
+  Map<String, double>? starter;
+  double? starterSavings;
+
+  @override
+  Future<void> createStarterBudget({required Map<String, double> categories, required double savingsLimit}) async {
+    starter = categories;
+    starterSavings = savingsLimit;
+  }
 }
 
 CategoryBudget _item(String id, String name, CategoryKind kind, double limit, double spent) => CategoryBudget(

@@ -1,7 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mizan/core/network/api_client.dart';
 import 'package:mizan/core/storage/preferences.dart';
 import 'package:mizan/core/storage/token_storage.dart';
 import 'package:mizan/features/auth/application/auth_controller.dart';
@@ -48,6 +51,15 @@ class FakeProfileRepository implements ProfileRepository {
 
   @override
   Future<void> deleteAccount() async => deleted = true;
+
+  @override
+  Future<(Uint8List, String)> exportData() async => (Uint8List(0), 'x.json');
+
+  @override
+  Future<void> sendVerificationCode() async {}
+
+  @override
+  Future<void> verifyEmail(String code) async {}
 }
 
 class FakeProfileActions implements ProfileActions {
@@ -56,6 +68,11 @@ class FakeProfileActions implements ProfileActions {
   @override
   Future<void> update({required String name, required double monthlyIncome, required int periodStartDay}) async =>
       updates.add((name, monthlyIncome, periodStartDay));
+
+  int exports = 0;
+
+  @override
+  Future<void> exportData() async => exports++;
 }
 
 void main() {
@@ -70,13 +87,14 @@ void main() {
     repository = FakeProfileRepository();
   });
 
-  Future<ProviderContainer> pumpSettings(WidgetTester tester) async {
+  Future<ProviderContainer> pumpSettings(WidgetTester tester, {FakeProfileActions? actions}) async {
     usePhoneScreen(tester);
 
     await tester.pumpWidget(testApp(const SettingsScreen(), overrides: [
       sharedPreferencesProvider.overrideWithValue(preferences),
       tokenStorageProvider.overrideWithValue(tokens),
       profileRepositoryProvider.overrideWithValue(repository),
+      if (actions != null) profileActionsProvider.overrideWithValue(actions),
     ]));
     await tester.pumpAndSettle();
     return ProviderScope.containerOf(tester.element(find.byType(SettingsScreen)));
@@ -136,6 +154,23 @@ void main() {
     expect(container.read(themeModeProvider), ThemeMode.light);
   });
 
+  testWidgets('export my data starts the export', (tester) async {
+    final actions = FakeProfileActions();
+    await pumpSettings(tester, actions: actions);
+
+    await tester.ensureVisible(find.byKey(const Key('exportData')));
+    await tester.tap(find.byKey(const Key('exportData')));
+    await tester.pump();
+
+    expect(actions.exports, 1);
+  });
+
+  testWidgets('a verified email has no "confirm your email" row', (tester) async {
+    await pumpSettings(tester);
+
+    expect(find.byKey(const Key('openVerifyEmail')), findsNothing);
+  });
+
   testWidgets('deleting the account needs confirmation, then ends the session', (tester) async {
     final container = await pumpSettings(tester);
     await container.read(authControllerProvider.future);
@@ -173,5 +208,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(actions.updates, [('Abdulrahman', 12000.0, 27)]);
+  });
+
+  test('the API gets the language the app shows', () {
+    expect(apiLanguage(const Locale('en'), const Locale('ar')), 'en');
+    expect(apiLanguage(null, const Locale('en', 'US')), 'en');
+    expect(apiLanguage(null, const Locale('fr')), 'ar');
   });
 }

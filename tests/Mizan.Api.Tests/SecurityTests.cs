@@ -135,7 +135,7 @@ public sealed class SecurityTests(MizanApiFactory factory)
 
         Assert.Equal(HttpStatusCode.BadRequest, futureDate.StatusCode);
         Assert.Equal("application/problem+json", futureDate.Content.Headers.ContentType?.MediaType);
-        Assert.Contains("future", await futureDate.Content.ReadAsStringAsync());
+        Assert.Contains("المستقبل", await futureDate.Content.ReadAsStringAsync());
         Assert.Equal(HttpStatusCode.BadRequest, missingField.StatusCode);
         Assert.Equal(HttpStatusCode.Conflict, duplicateCategory.StatusCode);
     }

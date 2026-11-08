@@ -15,6 +15,9 @@ public sealed class User : AggregateRoot
     public Money MonthlyIncome { get; private set; } = null!;
     public PeriodStartDay PeriodStartDay { get; private set; } = null!;
     public DateTimeOffset CreatedAt { get; private set; }
+    public DateTimeOffset? EmailVerifiedAt { get; private set; }
+
+    public bool IsEmailVerified => EmailVerifiedAt is not null;
 
     private User()
     {
@@ -68,6 +71,9 @@ public sealed class User : AggregateRoot
         ArgumentException.ThrowIfNullOrWhiteSpace(passwordHash);
         PasswordHash = passwordHash;
     }
+
+    // BR-U4: the user proved they own the email (a code sent to it). The first time is kept.
+    public void VerifyEmail(DateTimeOffset now) => EmailVerifiedAt ??= now;
 
     public void ChangeMonthlyIncome(Money monthlyIncome)
     {

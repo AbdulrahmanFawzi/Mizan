@@ -99,15 +99,21 @@ internal static class InsightText
     {
         OverBudgetInsight { PercentOver: { } percent } i => new(
             "OverBudget", i.CategoryId, categoryName,
-            $"أنفقت {percent}% أكثر من ميزانيتك على {categoryName} في هذه الفترة."),
+            Lang.Pick(
+                $"أنفقت {percent}% أكثر من ميزانيتك على {categoryName} في هذه الفترة.",
+                $"You spent {percent}% more than your {categoryName} budget this period.")),
 
         OverBudgetInsight i => new(
             "OverBudget", i.CategoryId, categoryName,
-            $"صرفت {MoneyFormat.Riyals(i.OverBy)} على {categoryName} وميزانيتها صفر."),
+            Lang.Pick(
+                $"صرفت {MoneyFormat.Riyals(i.OverBy)} على {categoryName} وميزانيتها صفر.",
+                $"You spent {MoneyFormat.Riyals(i.OverBy)} on {categoryName}, which has no budget.")),
 
         ProjectedOverBudgetInsight i => new(
             "ProjectedOverBudget", i.CategoryId, categoryName,
-            $"بناءً على معدل إنفاقك الحالي، من المتوقع أن تصرف {MoneyFormat.Riyals(i.Projected)} على {categoryName} وتتجاوز ميزانيتها ({MoneyFormat.Riyals(i.Limit)}) قبل نهاية الفترة."),
+            Lang.Pick(
+                $"بناءً على معدل إنفاقك الحالي، من المتوقع أن تصرف {MoneyFormat.Riyals(i.Projected)} على {categoryName} وتتجاوز ميزانيتها ({MoneyFormat.Riyals(i.Limit)}) قبل نهاية الفترة.",
+                $"At your current pace you'll spend about {MoneyFormat.Riyals(i.Projected)} on {categoryName}, over its {MoneyFormat.Riyals(i.Limit)} budget, before the period ends.")),
 
         _ => throw new ArgumentOutOfRangeException(nameof(insight)),
     };

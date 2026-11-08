@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Mizan.Application.Abstractions;
 using Mizan.Application.Auth;
+using Mizan.Application.Banking;
 using Mizan.Application.Budgets;
 using Mizan.Application.Categories;
 using Mizan.Application.Common;
@@ -21,13 +22,18 @@ public static class DependencyInjection
         services.AddSingleton<Clock>();
 
         services.AddScoped<AuthService>();
+        services.AddScoped<EmailCodes>();
         services.AddScoped<ProfileService>();
+        services.AddScoped<DataExportService>();
         services.AddScoped<CategoryService>();
         services.AddScoped<BudgetService>();
         services.AddScoped<TransactionService>();
         services.AddScoped<GoalService>();
         services.AddScoped<NotificationService>();
         services.AddScoped<DashboardService>();
+        services.AddScoped<ReviewService>();
+        services.AddScoped<BankConnectionService>();
+        services.AddScoped<BankImportService>();
 
         services.AddScoped<BudgetProvisioner>();
         services.AddScoped<BudgetReader>();

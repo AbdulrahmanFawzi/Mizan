@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../budget/data/budget_repository.dart';
 import '../dashboard/data/dashboard_repository.dart';
@@ -23,6 +24,15 @@ class ProfileActions {
       ..invalidate(budgetProvider)
       ..invalidate(goalsProvider)
       ..invalidate(goalProvider);
+  }
+
+  // UC-09: the phone's share sheet lets the user save the file or send it anywhere.
+  Future<void> exportData() async {
+    final (bytes, fileName) = await _ref.read(profileRepositoryProvider).exportData();
+    await SharePlus.instance.share(ShareParams(
+      files: [XFile.fromData(bytes, mimeType: 'application/json')],
+      fileNameOverrides: [fileName],
+    ));
   }
 }
 

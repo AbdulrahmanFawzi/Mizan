@@ -11,6 +11,7 @@ import '../../l10n/app_localizations.dart';
 import '../auth/application/auth_controller.dart';
 import '../profile/data/profile_repository.dart';
 import 'locale_controller.dart';
+import 'profile_actions.dart';
 import 'theme_mode_controller.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -67,6 +68,17 @@ class SettingsScreen extends ConsumerWidget {
             const Card(child: SizedBox(height: 180, child: Center(child: CircularProgressIndicator())))
           else
             _ProfileCard(profile: profile),
+          SectionHeader(l10n.banks),
+          Card(
+            clipBehavior: Clip.antiAlias,
+            child: _SettingsRow(
+              key: const Key('openBanks'),
+              icon: Icons.account_balance_rounded,
+              color: colors.mintOnLight,
+              label: l10n.banks,
+              onTap: () => context.push(Routes.banks),
+            ),
+          ),
           SectionHeader(l10n.languageSetting),
           SizedBox(
             width: double.infinity,
@@ -104,6 +116,31 @@ class SettingsScreen extends ConsumerWidget {
           Card(
             clipBehavior: Clip.antiAlias,
             child: Column(children: [
+              if (profile != null && !profile.emailVerified) ...[
+                _SettingsRow(
+                  key: const Key('openVerifyEmail'),
+                  icon: Icons.mark_email_unread_rounded,
+                  color: colors.warning,
+                  label: l10n.verifyEmail,
+                  onTap: () => context.push(Routes.verifyEmail),
+                ),
+                const Divider(indent: 68),
+              ],
+              _SettingsRow(
+                key: const Key('exportData'),
+                icon: Icons.download_rounded,
+                color: colors.mintOnLight,
+                label: l10n.exportData,
+                onTap: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  try {
+                    await ref.read(profileActionsProvider).exportData();
+                  } catch (error) {
+                    messenger.showSnackBar(SnackBar(content: Text(errorMessage(error, l10n))));
+                  }
+                },
+              ),
+              const Divider(indent: 68),
               _SettingsRow(
                 key: const Key('logout'),
                 icon: Icons.logout_rounded,

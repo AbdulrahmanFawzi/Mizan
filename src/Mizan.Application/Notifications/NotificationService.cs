@@ -34,7 +34,7 @@ public sealed class NotificationService(INotificationRepository notifications, I
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    private static NotificationDto ToDto(Notification notification)
+    internal static NotificationDto ToDto(Notification notification)
     {
         var (title, message) = NotificationText.For(notification);
         return new NotificationDto(

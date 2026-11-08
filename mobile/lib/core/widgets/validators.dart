@@ -17,6 +17,10 @@ abstract final class Validators {
     return value!.length < minPasswordLength ? l10n.passwordTooShort(minPasswordLength) : null;
   }
 
+  // The 6-digit code from an email (UC-05, UC-07).
+  static String? emailCode(String? value, AppLocalizations l10n) =>
+      RegExp(r'^\d{6}$').hasMatch(value?.trim() ?? '') ? null : l10n.invalidCode;
+
   // Money: greater than zero with at most two decimals (halalas), like the API (BR-M2, BR-T1).
   static String? positiveAmount(String? value, AppLocalizations l10n) {
     final text = value?.trim() ?? '';

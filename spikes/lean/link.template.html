@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lean link (spike)</title>
+  <script src="https://cdn.leantech.me/link/loader/prod/sa/latest/lean-link-loader.min.js"></script>
+  <style>body{font-family:system-ui;max-width:560px;margin:40px auto;padding:0 16px}button{font-size:18px;padding:12px 20px}</style>
+</head>
+<body>
+  <h2>Lean sandbox spike</h2>
+  <p>Click the button, choose a <b>Mockbank</b>, and log in with a test user from the dashboard
+     (Development → Test users). The OTP in the sandbox is <b>1111</b>.</p>
+  <button id="connect">Connect a bank</button>
+  <pre id="result"></pre>
+  <script>
+    document.getElementById('connect').onclick = () => Lean.connect({
+      app_token: '__APP_TOKEN__',
+      access_token: '__ACCESS_TOKEN__',
+      customer_id: '__CUSTOMER_ID__',
+      permissions: (new URLSearchParams(location.search).get('perms') || 'accounts,balance,transactions').split(','),
+      sandbox: true,
+      show_consent_explanation: true,
+      success_redirect_url: 'https://www.leantech.me/?success=true',
+      fail_redirect_url: 'https://www.leantech.me/?success=false',
+      access_to: '__ACCESS_TO__',
+      // ?bank=LEA1_SAMAOB_SAU skips the bank list.
+      ...(new URLSearchParams(location.search).get('bank') ? { bank_identifier: new URLSearchParams(location.search).get('bank') } : {}),
+      callback: (response) => {
+        document.getElementById('result').textContent = JSON.stringify(response, null, 2);
+      },
+    });
+  </script>
+</body>
+</html>

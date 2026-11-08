@@ -26,6 +26,24 @@ dotnet run --project src/Mizan.Api --launch-profile http
 - التوثيق التفاعلي (Scalar): `http://localhost:5009/scalar/v1`. سجّل من `/api/auth/register`، انسخ `accessToken`، واستخدمه كـ Bearer.
 - أمثلة جاهزة في `src/Mizan.Api/Mizan.Api.http`.
 
+## ربط البنوك (MVP 1، عبر Lean)
+
+بدون مفاتيح Lean، التطبيق يشتغل طبيعي وربط البنك فقط يرجع رسالة "غير مُعد".
+لتفعيله في التطوير، حط مفاتيح الـ Sandbox (من Lean Dashboard → Development → Integration settings) في **User Secrets**، مو في الملفات:
+
+```bash
+dotnet user-secrets set "Lean:AppToken" "<app token>" --project src/Mizan.Api
+```
+
+```bash
+dotnet user-secrets set "Lean:ClientSecret" "<client secret>" --project src/Mizan.Api
+```
+
+- عناوين الرجوع (`Lean:SuccessRedirectUrl` و `Lean:FailRedirectUrl`) لازم تكون مسجلة في Lean Dashboard → Redirection URLs، وإلا الربط يفشل.
+- الـ Webhooks (`POST /api/webhooks/lean`) تحتاج `Lean:WebhookSecret` وعنوان يوصل له الإنترنت. محليًا ما يلزم: التطبيق يكتشف الربط الجديد بنفسه (`/api/bank-connections/discover`) ويحدّث عند الفتح.
+- الأعمال الخلفية (التحديث اليومي 6 صباحًا، معالجة الـ Webhooks، الـ Outbox) تشتغل داخل الـ API. `BackgroundJobs:Enabled=false` يوقفها.
+- تجربة الـ Sandbox الأولى وما تعلمناه منها: `docs/domain-discovery/mvp1/00-sandbox-findings.md` و `spikes/lean/`.
+
 ## الاختبارات
 
 ```bash
@@ -33,7 +51,7 @@ dotnet test
 ```
 
 - `Mizan.Domain.Tests`: قواعد العمل، سريعة وبدون قاعدة بيانات.
-- `Mizan.Api.Tests`: الرحلة كاملة عبر HTTP على PostgreSQL حقيقي في Docker (يحتاج Docker شغّال).
+- `Mizan.Api.Tests`: الرحلة كاملة عبر HTTP على PostgreSQL حقيقي في Docker (يحتاج Docker شغّال). ربط البنوك يُختبر ببنك وهمي (`FakeBankingProvider`) بدل Lean.
 
 ## الهيكل
 
@@ -58,5 +76,6 @@ dotnet ef migrations add <Name> --project src/Mizan.Infrastructure --startup-pro
 ## قبل أي نشر حقيقي
 
 - `Jwt:SigningKey` يُعطى من متغير بيئة (`Jwt__SigningKey`) أو Secret Manager، ولا يوضع في الملفات.
+- `Banking:EncryptionKey` (32 بايت عشوائية بصيغة base64، لتشفير الـ IBAN) ومفاتيح `Lean:*` كذلك. المفتاح الموجود في `appsettings.Development.json` للتطوير فقط.
 - الـ Migrations تُطبَّق كخطوة نشر منفصلة، مو عند تشغيل التطبيق.
 - مراجعة متطلبات نظام حماية البيانات الشخصية (PDPL) قبل أول مستخدم حقيقي.

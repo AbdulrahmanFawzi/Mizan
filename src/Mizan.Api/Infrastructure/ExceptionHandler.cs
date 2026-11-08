@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Mizan.Application.Abstractions;
 using Mizan.Application.Common;
 using Mizan.Domain.Common;
 
@@ -18,6 +19,9 @@ internal sealed class ExceptionHandler(IProblemDetailsService problemDetails, IL
             NotFoundException => (StatusCodes.Status404NotFound, "Not found"),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict"),
             AuthenticationFailedException => (StatusCodes.Status401Unauthorized, "Authentication failed"),
+            EmailNotVerifiedException => (StatusCodes.Status403Forbidden, "Email not verified"),
+            ConsentExpiredException => (StatusCodes.Status409Conflict, "Bank consent expired"),
+            BankingProviderException => (StatusCodes.Status503ServiceUnavailable, "Bank service unavailable"),
             _ => (StatusCodes.Status500InternalServerError, "Server error"),
         };
 
@@ -35,7 +39,7 @@ internal sealed class ExceptionHandler(IProblemDetailsService problemDetails, IL
             {
                 Status = status,
                 Title = title,
-                Detail = status == StatusCodes.Status500InternalServerError ? null : exception.Message,
+                Detail = status == StatusCodes.Status500InternalServerError ? null : ErrorText.For(exception),
             },
         });
     }

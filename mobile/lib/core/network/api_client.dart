@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../features/auth/application/auth_controller.dart';
+import '../../features/settings/locale_controller.dart';
 import '../config/app_config.dart';
 import '../storage/token_storage.dart';
 import 'api_exception.dart';
@@ -14,8 +17,16 @@ BaseOptions _options() => BaseOptions(
       contentType: Headers.jsonContentType,
     );
 
+// The language the app shows, so the API answers in it (insights, notifications, errors).
+// Same choice as MaterialApp: the saved language, else the phone's, with Arabic as the fallback.
+String apiLanguage(Locale? chosen, Locale phone) => (chosen ?? phone).languageCode == 'en' ? 'en' : 'ar';
+
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(_options());
+  dio.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+    options.headers['Accept-Language'] = apiLanguage(ref.read(localeProvider), PlatformDispatcher.instance.locale);
+    handler.next(options);
+  }));
   dio.interceptors.add(AuthInterceptor(
     storage: ref.watch(tokenStorageProvider),
     plainDio: Dio(_options()),

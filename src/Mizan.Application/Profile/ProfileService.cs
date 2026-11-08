@@ -12,11 +12,16 @@ public sealed record ProfileDto(
     string Email,
     string Currency,
     MoneyDto MonthlyIncome,
-    int PeriodStartDay);
+    int PeriodStartDay,
+    bool EmailVerified);
 
 public sealed record UpdateProfileCommand(string Name, decimal MonthlyIncome, int PeriodStartDay);
 
-public sealed class ProfileService(IUserRepository users, IUnitOfWork unitOfWork)
+public sealed class ProfileService(
+    IUserRepository users,
+    IBankingCustomerRepository bankingCustomers,
+    IOutbox outbox,
+    IUnitOfWork unitOfWork)
 {
     public async Task<ProfileDto> GetAsync(Guid userId, CancellationToken cancellationToken)
     {
@@ -38,9 +43,17 @@ public sealed class ProfileService(IUserRepository users, IUnitOfWork unitOfWork
     }
 
     // UC-06, BR-U3: the database cascades the delete to all of the user's data.
+    // BR-C10: the bank provider is told in the background (outbox), so our data is deleted even if it's down.
     public async Task DeleteAccountAsync(Guid userId, CancellationToken cancellationToken)
     {
         var user = await GetUserAsync(userId, cancellationToken);
+
+        // Deleting the customer at the provider removes its links and consents too.
+        if (await bankingCustomers.GetAsync(userId, cancellationToken) is { } customer)
+        {
+            outbox.Enqueue(OutboxTypes.DeleteCustomer, new DeleteCustomerMessage(customer.ProviderCustomerId));
+        }
+
         users.Remove(user);
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -54,5 +67,6 @@ public sealed class ProfileService(IUserRepository users, IUnitOfWork unitOfWork
         user.Email.Value,
         user.Currency.Code,
         MoneyDto.From(user.MonthlyIncome),
-        user.PeriodStartDay.Value);
+        user.PeriodStartDay.Value,
+        user.IsEmailVerified);
 }

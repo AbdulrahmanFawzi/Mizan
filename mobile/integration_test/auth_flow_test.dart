@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mizan/features/notifications/presentation/notifications_screen.dart';
 import 'package:mizan/features/transactions/presentation/widgets/transaction_tile.dart';
@@ -29,6 +30,7 @@ void main() {
 
   testWidgets('the whole MVP 0 journey, from sign-up to account deletion', (tester) async {
     await const FlutterSecureStorage().deleteAll();
+    await (await SharedPreferences.getInstance()).clear(); // language, theme and setup state from earlier runs
     final email = 'it-${DateTime.now().millisecondsSinceEpoch}@example.com';
 
     app.main();
@@ -43,6 +45,11 @@ void main() {
     await tester.enterText(fields.at(2), 'P@ssw0rd123');
     await tester.enterText(fields.at(3), '12500');
     await tester.tap(find.byType(FilledButton));
+    await tester.pumpAndSettle(const Duration(seconds: 1));
+
+    // A new account starts with the guided setup; this journey skips it.
+    await pumpUntilFound(tester, find.byKey(const Key('skipSetup')));
+    await tester.tap(find.byKey(const Key('skipSetup')));
     await tester.pumpAndSettle(const Duration(seconds: 1));
 
     // Dashboard from GET /api/dashboard, name from GET /api/me
@@ -139,6 +146,11 @@ void main() {
     await tester.pumpAndSettle(const Duration(seconds: 1));
     expect(find.textContaining('15,000'), findsOneWidget);
 
+    // The Bank accounts section (MVP 1) pushes this further down the screen.
+    // The "profile saved" message floats over the bottom of the screen; a person would wait for it.
+    tester.state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger).first).removeCurrentSnackBar();
+    await tester.ensureVisible(find.byKey(const Key('deleteAccount')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('deleteAccount')));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('confirmDeleteAccount')));
