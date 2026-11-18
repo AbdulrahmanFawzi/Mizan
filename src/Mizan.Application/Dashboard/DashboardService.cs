@@ -112,8 +112,8 @@ internal static class InsightText
         ProjectedOverBudgetInsight i => new(
             "ProjectedOverBudget", i.CategoryId, categoryName,
             Lang.Pick(
-                $"بناءً على معدل إنفاقك الحالي، من المتوقع أن تصرف {MoneyFormat.Riyals(i.Projected)} على {categoryName} وتتجاوز ميزانيتها ({MoneyFormat.Riyals(i.Limit)}) قبل نهاية الفترة.",
-                $"At your current pace you'll spend about {MoneyFormat.Riyals(i.Projected)} on {categoryName}, over its {MoneyFormat.Riyals(i.Limit)} budget, before the period ends.")),
+                $"بناءً على معدل إنفاقك الحالي، من المتوقع أن تصرف {MoneyFormat.Riyals(i.Projected, whole: true)} على {categoryName} وتتجاوز ميزانيتها ({MoneyFormat.Riyals(i.Limit)}) قبل نهاية الفترة.",
+                $"At your current pace you'll spend about {MoneyFormat.Riyals(i.Projected, whole: true)} on {categoryName}, over its {MoneyFormat.Riyals(i.Limit)} budget, before the period ends.")),
 
         _ => throw new ArgumentOutOfRangeException(nameof(insight)),
     };
